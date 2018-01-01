@@ -3,7 +3,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file LICENSE or http://www.opensource.org/licenses/mit-license.php.
 
-module.exports = (condition, message = 'Precondition failed.') => {
+module.exports = (condition, message) => {
   if (!condition) {
     throw new Error(message);
   }

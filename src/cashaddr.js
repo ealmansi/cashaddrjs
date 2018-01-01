@@ -42,7 +42,7 @@ function decode(address) {
   const payload = base32.decode(encodedPayload.toLowerCase());
   ensure(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
   const [versionByte, ...hash] = convertBits(payload.slice(0, -8), 5, 8, true);
-  ensure(getHashSize(versionByte) === hash.length, `Invalid hash length: ${address}.`);
+  ensure(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
   const type = getType(versionByte);
   return { prefix, type, hash };
 }
@@ -90,13 +90,13 @@ function getTypeBits(type) {
  * @param {number} versionByte 
  */
 function getType(versionByte) {
-  switch (versionByte & 8) {
+  switch (versionByte & 120) {
   case 0:
     return 'P2KH';
   case 8:
     return 'P2SH';
   default:
-    throw new Error(`Invalid version byte: ${versionByte}.`);
+    throw new Error(`Invalid address type in version byte: ${versionByte}.`);
   }
 }
 
@@ -125,7 +125,7 @@ function getHashSizeBits(hash) {
   case 512:
     return 7;
   default:
-    throw new Error(`Invalid hash length: ${hash.length}.`);
+    throw new Error(`Invalid hash size: ${hash.length}.`);
   }
 }
 
@@ -138,23 +138,23 @@ function getHashSizeBits(hash) {
 function getHashSize(versionByte) {
   switch (versionByte & 7) {
   case 0:
-    return 20;
+    return 160;
   case 1:
-    return 24;
+    return 192;
   case 2:
-    return 28;
+    return 224;
   case 3:
-    return 32;
+    return 256;
   case 4:
-    return 40;
+    return 320;
   case 5:
-    return 48;
+    return 384;
   case 6:
-    return 56;
+    return 448;
   case 7:
-    return 64;
+    return 512;
   default:
-    throw new Error(`Invalid version byte: ${versionByte}.`);
+    throw new Error(`Invalid hash size in version byte: ${versionByte}.`);
   }
 }
 

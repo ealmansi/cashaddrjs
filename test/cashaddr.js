@@ -46,6 +46,12 @@ describe('cashaddr', () => {
   }
 
   describe('#encode()', () => {
+    it('should fail on an invalid type', () => {
+      assert.throws(() => {
+        cashaddr.encode(NETWORKS[0], 'some invalid type', []);
+      });
+    });
+
     it('should fail on hashes of invalid length', () => {
       for (let size of VALID_SIZES) {
         const hash = getRandomHash(size - 1);
@@ -70,11 +76,10 @@ describe('cashaddr', () => {
   });
 
   describe('#decode()', () => {
-    it('should decode a valid address regardless of case', () => {
-      assert.deepEqual(
-        cashaddr.decode('bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a').hash,
-        cashaddr.decode('BITCOINCASH:QPM2QSZNHKS23Z7629MMS6S4CWEF74VCWVY22GDX6A').hash
-      );
+    it('should fail when the version byte is invalid', () => {
+      assert.throws(() => {
+        cashaddr.decode('bitcoincash:zpm2qsznhks23z7629mms6s4cwef74vcwvrqekrq9w');
+      });
     });
 
     it('should fail when given an address with mixed case', () => {
@@ -83,6 +88,13 @@ describe('cashaddr', () => {
       });
     });
 
+    it('should decode a valid address regardless of case', () => {
+      assert.deepEqual(
+        cashaddr.decode('bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a').hash,
+        cashaddr.decode('BITCOINCASH:QPM2QSZNHKS23Z7629MMS6S4CWEF74VCWVY22GDX6A').hash
+      );
+    });
+    
     it('should fail when decoding for a different network', () => {
       for (let network of NETWORKS) {
         for (let anotherNetwork of NETWORKS) {
