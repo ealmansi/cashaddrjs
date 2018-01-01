@@ -5,7 +5,8 @@
   "main": "src/cashaddr.js",
   "scripts": {
     "build": "sh scripts/build.sh",
-    "test": "NODE_PATH=$NODE_PATH:.. npx mocha --timeout 15000",
+    "test": "NODE_PATH=$NODE_PATH:.. nyc --reporter=html --reporter=text npx mocha --timeout 15000",
+    "coveralls": "npx nyc report --reporter=text-lcov | npx coveralls",
     "docs": "sh scripts/docs.sh"
   },
   "repository": {
@@ -33,11 +34,13 @@
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "eslint": "^4.13.1",
     "http-server": "^0.10.0",
     "jsdoc": "^3.5.5",
     "mocha": "^4.0.1",
     "mocha-eslint": "^4.1.0",
+    "nyc": "^11.4.1",
     "random-js": "^1.0.8",
     "uglify-es": "^3.2.2",
     "uglify-js": "^3.2.2",
