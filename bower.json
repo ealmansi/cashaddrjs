@@ -1,0 +1,26 @@
+{
+  "name": "cashaddrjs",
+  "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
+  "main": "src/cashaddr.js",
+  "authors": [
+    "Emilio Almansi"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bitcoin",
+    "cash",
+    "cashaddr",
+    "address",
+    "format",
+    "node",
+    "browser"
+  ],
+  "homepage": "https://github.com/bitcoincashjs/cashaddrjs",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
