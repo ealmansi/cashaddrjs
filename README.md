@@ -49,7 +49,7 @@ console.log(cashaddr.decode(address))
 <html>
   <head>
     ...
-    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.1.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.1.1.min.js"></script>
   </head>
   ...
 </html>
