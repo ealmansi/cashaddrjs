@@ -156,8 +156,6 @@ function getHashSize(versionByte) {
     return 448;
   case 7:
     return 512;
-  default:
-    throw new Error(`Invalid hash size in version byte: ${versionByte}.`);
   }
 }
 

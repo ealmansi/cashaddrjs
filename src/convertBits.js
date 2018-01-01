@@ -54,4 +54,4 @@ module.exports = (data, from, to, strict = false) => {
     throw new Error('Conversion requires padding but strict mode was used.');
   }
   return result;
-}
+};
