@@ -10,9 +10,21 @@ Compliant with the original CashAddr [specification](https://github.com/Bitcoin-
 
 ## Installation
 
+### Using NPM
+
 ```s
 $ npm install --save cashaddrjs
 ```
+
+### Using Bower
+
+```s
+$ bower install --save cashaddrjs
+```
+
+### Manually
+
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.1.2.min.js](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/f700942f/dist/cashaddrjs-0.1.2.min.js).
 
 ## Usage
 
@@ -27,23 +39,21 @@ const hash = [
   119, 184, 106, 21, 195,
   178, 159, 85,  152, 115
 ];
+
 const address = cashaddr.encode('bitcoincash', 'P2KH', hash);
+console.log(address); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
 
-console.log(address);
-// 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
-
-console.log(cashaddr.decode(address))
-// { prefix: 'bitcoincash',
-//   type: 'P2KH',
-//   hash: 
-//   [ 118,
-//     ...
-//     115 ] }
+const decoded = cashaddr.decode(address);
+console.log(decoded.prefix); // 'bitcoincash'
+console.log(decoded.type); // 'P2KH'
+console.log(decoded.hash); // [ 118, 160, ..., 115 ]
 ```
 
 ### Browser
 
 #### Script Tag
+
+You may include a script tag in your HTML and the `cashaddr` module will be defined globally on subsequent scripts.
 
 ```html
 <html>
