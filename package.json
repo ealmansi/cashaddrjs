@@ -5,7 +5,7 @@
   "main": "src/cashaddr.js",
   "scripts": {
     "build": "sh scripts/build.sh",
-    "test": "NODE_PATH=$NODE_PATH:.. npx mocha",
+    "test": "NODE_PATH=$NODE_PATH:.. npx mocha --timeout 15000",
     "docs": "sh scripts/docs.sh"
   },
   "repository": {
