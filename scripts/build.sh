@@ -10,4 +10,4 @@ version=${cashaddr#*@}
 npm install \
   && npx browserify src/cashaddr.js --s cashaddr -t [ babelify --presets [ env ] ] \
   | npx uglifyjs -c --comments \
-  > dist/cashaddr-${version}.min.js
+  > dist/cashaddrjs-${version}.min.js
