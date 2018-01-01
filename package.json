@@ -1,0 +1,49 @@
+{
+  "name": "cashaddrjs",
+  "version": "0.1.0",
+  "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
+  "main": "src/cashaddr.js",
+  "scripts": {
+    "build": "sh scripts/build.sh",
+    "test": "NODE_PATH=$NODE_PATH:.. npx mocha",
+    "docs": "sh scripts/docs.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitcoincashjs/cashaddrjs.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "cash",
+    "cashaddr",
+    "address",
+    "format",
+    "node",
+    "browser"
+  ],
+  "author": "Emilio Almansi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bitcoincashjs/cashaddrjs/issues"
+  },
+  "homepage": "https://github.com/bitcoincashjs/cashaddrjs#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.13.1",
+    "http-server": "^0.10.0",
+    "jsdoc": "^3.5.5",
+    "mocha": "^4.0.1",
+    "mocha-eslint": "^4.1.0",
+    "random-js": "^1.0.8",
+    "uglify-es": "^3.2.2",
+    "uglify-js": "^3.2.2",
+    "watchify": "^3.9.0"
+  },
+  "dependencies": {
+    "big-integer": "^1.6.26"
+  }
+}
