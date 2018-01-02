@@ -15,7 +15,7 @@ const convertBits = require('./convertBits');
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
  * 
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
- * @param {string} type Type of address to generate. Either 'P2KH' or 'P2SH'.
+ * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
  * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
  */
 function encode(prefix, type, hash) {
@@ -73,11 +73,11 @@ function hasSingleCase(string) {
  * Returns the bit representation of the given type within the version
  * byte.
  *
- * @param {string} type Address type. Either 'P2KH' or 'P2SH'.
+ * @param {string} type Address type. Either 'P2PKH' or 'P2SH'.
  */
 function getTypeBits(type) {
   switch (type) {
-  case 'P2KH':
+  case 'P2PKH':
     return 0;
   case 'P2SH':
     return 8;
@@ -95,7 +95,7 @@ function getTypeBits(type) {
 function getType(versionByte) {
   switch (versionByte & 120) {
   case 0:
-    return 'P2KH';
+    return 'P2PKH';
   case 8:
     return 'P2SH';
   default:

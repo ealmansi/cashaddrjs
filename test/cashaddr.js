@@ -15,7 +15,7 @@ describe('cashaddr', () => {
 
   const NETWORKS = ['bitcoincash', 'bchtest', 'bchreg'];
   
-  const ADDRESS_TYPES = ['P2KH', 'P2SH'];
+  const ADDRESS_TYPES = ['P2PKH', 'P2SH'];
   
   const VALID_SIZES = [20, 24, 28, 32, 40, 48, 56, 64];
 
@@ -25,7 +25,7 @@ describe('cashaddr', () => {
     [1,   31, 40,  228, 115, 201, 95, 64,  19,  215, 213, 62, 197, 251, 195, 180, 45, 248, 237, 16],
   ];
   
-  const EXPECTED_P2KH_OUTPUTS = [
+  const EXPECTED_P2PKH_OUTPUTS = [
     'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a',
     'bitcoincash:qr95sy3j9xwd2ap32xkykttr4cvcu7as4y0qverfuy',
     'bitcoincash:qqq3728yw0y47sqn6l2na30mcw6zm78dzqre909m2r',
@@ -66,8 +66,8 @@ describe('cashaddr', () => {
     it('should encode test hashes correctly', () => {
       for (const index in TEST_HASHES) {
         assert.equal(
-          cashaddr.encode('bitcoincash', 'P2KH', TEST_HASHES[index]),
-          EXPECTED_P2KH_OUTPUTS[index]
+          cashaddr.encode('bitcoincash', 'P2PKH', TEST_HASHES[index]),
+          EXPECTED_P2PKH_OUTPUTS[index]
         );
         assert.equal(
           cashaddr.encode('bitcoincash', 'P2SH', TEST_HASHES[index]),
