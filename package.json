@@ -10,7 +10,7 @@
     "readme": "npx mustache package.json README.mst > README.md && git add -A README.md",
     "preversion": "npm test",
     "version": "rm dist/* && npm run build && git add -A dist && npm run readme",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push && git push --tags && npm publish",
     "bump": "npm version patch -m 'Bump to %s.'",
     "docs": "sh scripts/docs.sh"
   },
