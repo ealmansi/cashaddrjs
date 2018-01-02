@@ -7,6 +7,10 @@
     "build": "sh scripts/build.sh",
     "test": "NODE_PATH=$NODE_PATH:.. nyc --reporter=html --reporter=text npx mocha --timeout 15000",
     "coveralls": "npx nyc report --reporter=text-lcov | npx coveralls",
+    "readme": "npx mustache package.json README.mst > README.md",
+    "preversion": "npm test",
+    "version": "npm run readme && rm dist/* && npm run build && git add -A dist",
+    "postversion": "git push && git push --tags",
     "docs": "sh scripts/docs.sh"
   },
   "repository": {
@@ -40,6 +44,7 @@
     "jsdoc": "^3.5.5",
     "mocha": "^4.0.1",
     "mocha-eslint": "^4.1.0",
+    "mustache": "^2.3.0",
     "nyc": "^11.4.1",
     "random-js": "^1.0.8",
     "uglify-es": "^3.2.2",
