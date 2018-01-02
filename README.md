@@ -45,7 +45,7 @@ console.log(address); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a
 
 const decoded = cashaddr.decode(address);
 console.log(decoded.prefix); // 'bitcoincash'
-console.log(decoded.type); // 'P2KH'
+console.log(decoded.type); // 'P2PKH'
 console.log(decoded.hash); // [ 118, 160, ..., 115 ]
 ```
 
