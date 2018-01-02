@@ -40,7 +40,7 @@ const hash = [
   178, 159, 85,  152, 115
 ];
 
-const address = cashaddr.encode('bitcoincash', 'P2KH', hash);
+const address = cashaddr.encode('bitcoincash', 'P2PKH', hash);
 console.log(address); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
 
 const decoded = cashaddr.decode(address);
