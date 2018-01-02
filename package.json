@@ -1,6 +1,6 @@
 {
   "name": "cashaddrjs",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
   "main": "src/cashaddr.js",
   "scripts": {
