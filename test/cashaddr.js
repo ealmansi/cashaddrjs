@@ -37,6 +37,18 @@ describe('cashaddr', () => {
     'bitcoincash:pqq3728yw0y47sqn6l2na30mcw6zm78dzq5ucqzc37', 
   ];
 
+  const EXPECTED_P2PKH_OUTPUTS_TESTNET = [
+    'bchtest:qpm2qsznhks23z7629mms6s4cwef74vcwvqcw003ap',
+    'bchtest:qr95sy3j9xwd2ap32xkykttr4cvcu7as4ytjg7p7mc',
+    'bchtest:qqq3728yw0y47sqn6l2na30mcw6zm78dzq8tpg8vdl',
+  ];
+
+  const EXPECTED_P2SH_OUTPUTS_TESTNET = [
+    'bchtest:ppm2qsznhks23z7629mms6s4cwef74vcwvhanqgjxu',
+    'bchtest:pr95sy3j9xwd2ap32xkykttr4cvcu7as4yuh43xaq9',
+    'bchtest:pqq3728yw0y47sqn6l2na30mcw6zm78dzqswu8q0kz',
+  ];
+
   const random = new Random(Random.engines.mt19937().seed(42));
 
   function getRandomHash(size) {
@@ -63,7 +75,7 @@ describe('cashaddr', () => {
       }
     });
 
-    it('should encode test hashes correctly', () => {
+    it('should encode test hashes on mainnet correctly', () => {
       for (const index in TEST_HASHES) {
         assert.equal(
           cashaddr.encode('bitcoincash', 'P2PKH', TEST_HASHES[index]),
@@ -72,6 +84,19 @@ describe('cashaddr', () => {
         assert.equal(
           cashaddr.encode('bitcoincash', 'P2SH', TEST_HASHES[index]),
           EXPECTED_P2SH_OUTPUTS[index]
+        );
+      }
+    });
+
+    it('should encode test hashes on testnet correctly', () => {
+      for (const index in TEST_HASHES) {
+        assert.equal(
+          cashaddr.encode('bchtest', 'P2PKH', TEST_HASHES[index]),
+          EXPECTED_P2PKH_OUTPUTS_TESTNET[index]
+        );
+        assert.equal(
+          cashaddr.encode('bchtest', 'P2SH', TEST_HASHES[index]),
+          EXPECTED_P2SH_OUTPUTS_TESTNET[index]
         );
       }
     });
