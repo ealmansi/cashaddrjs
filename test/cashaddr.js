@@ -9,7 +9,7 @@
 
 const Random = require('random-js');
 const assert = require('chai').assert;
-const cashaddr = require('cashaddrjs');
+const cashaddr = require('../src/cashaddr');
 
 describe('cashaddr', () => {
 

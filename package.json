@@ -2,17 +2,16 @@
   "name": "cashaddrjs",
   "version": "0.1.9",
   "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
-  "main": "src/cashaddr.js",
+  "main": "lib/cashaddr.js",
   "scripts": {
-    "build": "sh scripts/build.sh",
-    "test": "NODE_PATH=$NODE_PATH:.. nyc --reporter=html --reporter=text npx mocha --timeout 15000",
+    "build": "node scripts/build.js",
+    "test": "npm install && npx nyc --reporter=html --reporter=text npx mocha --timeout 15000",
     "coveralls": "npx nyc report --reporter=text-lcov | npx coveralls",
-    "readme": "npx mustache package.json README.mst > README.md && git add -A README.md",
+    "docs": "node scripts/docs.js",
     "preversion": "npm test",
-    "version": "rm dist/* && npm run build && git add -A dist && npm run readme",
-    "postversion": "git push && git push --tags && npm publish",
-    "bump": "npm version patch -m 'Bump to %s.'",
-    "docs": "sh scripts/docs.sh"
+    "version": "node scripts/version.js",
+    "postversion": "node scripts/postversion.js",
+    "bump": "npm version patch -m 'Bump version to %s.'"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,9 @@
   },
   "homepage": "https://github.com/bitcoincashjs/cashaddrjs#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
@@ -48,6 +49,7 @@
     "mustache": "^2.3.0",
     "nyc": "^11.4.1",
     "random-js": "^1.0.8",
+    "shelljs": "^0.7.8",
     "uglify-es": "^3.2.2",
     "uglify-js": "^3.2.2",
     "watchify": "^3.9.0"
