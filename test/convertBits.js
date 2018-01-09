@@ -7,9 +7,9 @@
 
 /* global describe it */
 
-const Random = require('random-js');
-const assert = require('chai').assert;
-const convertBits = require('../src/convertBits');
+import Random from 'random-js';
+import { assert } from 'chai';
+import convertBits from '../lib/convertBits';
 
 describe('#convertBits()', () => {
 

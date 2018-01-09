@@ -7,9 +7,9 @@
 
 /* global describe it */
 
-const Random = require('random-js');
-const assert = require('chai').assert;
-const cashaddr = require('../src/cashaddr');
+import Random from 'random-js';
+import { assert } from 'chai';
+import * as cashaddr from '../lib/cashaddr';
 
 describe('cashaddr', () => {
 
@@ -67,7 +67,7 @@ describe('cashaddr', () => {
     });
 
     it('should fail on hashes of invalid length', () => {
-      for (let size of VALID_SIZES) {
+      for (const size of VALID_SIZES) {
         const hash = getRandomHash(size - 1);
         assert.throws(() => {
           cashaddr.encode(NETWORKS[0], ADDRESS_TYPES[0], hash);
@@ -123,8 +123,8 @@ describe('cashaddr', () => {
     });
     
     it('should fail when decoding for a different network', () => {
-      for (let network of NETWORKS) {
-        for (let anotherNetwork of NETWORKS) {
+      for (const network of NETWORKS) {
+        for (const anotherNetwork of NETWORKS) {
           if (network !== anotherNetwork) {
             const hash = getRandomHash(20);
             assert.throws(() => {
@@ -140,7 +140,7 @@ describe('cashaddr', () => {
   
   describe('#encode() #decode()', () => {
     it('should encode and decode all sizes correctly', () => {
-      for (let size of VALID_SIZES) {
+      for (const size of VALID_SIZES) {
         const hash = getRandomHash(size);
         const address = cashaddr.encode(NETWORKS[0], ADDRESS_TYPES[0], hash);
         const { prefix, type, hash: actualHash } = cashaddr.decode(address);
@@ -151,8 +151,8 @@ describe('cashaddr', () => {
     });
   
     it('should encode and decode all types and networks', () => {
-      for (let type of ADDRESS_TYPES) {
-        for (let network of NETWORKS) {
+      for (const type of ADDRESS_TYPES) {
+        for (const network of NETWORKS) {
           const hash = getRandomHash(20);
           const address = cashaddr.encode(network, type, hash);
           const { prefix, type: actualType, hash: actualHash } = cashaddr.decode(address);
@@ -166,7 +166,7 @@ describe('cashaddr', () => {
     it('should encode and decode many random hashes', () => {
       const NUM_TESTS = 1000;
       for (let i = 0; i < NUM_TESTS; ++i) {
-        for (let type of ADDRESS_TYPES) {
+        for (const type of ADDRESS_TYPES) {
           const hash = getRandomHash(20);
           const address = cashaddr.encode(NETWORKS[0], type, hash);
           const { prefix, type: actualType, hash: actualHash } = cashaddr.decode(address);

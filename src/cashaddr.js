@@ -6,10 +6,10 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-const bigInt = require('big-integer');
-const ensure = require('./ensure');
-const base32 = require('./base32');
-const convertBits = require('./convertBits');
+import bigInt from 'big-integer';
+import ensure from './ensure';
+import * as base32 from './base32';
+import convertBits from './convertBits';
 
 /**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
@@ -18,7 +18,7 @@ const convertBits = require('./convertBits');
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
  * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
  */
-function encode(prefix, type, hash) {
+export function encode(prefix, type, hash) {
   ensure(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
   ensure(typeof type === 'string', `Invalid type: ${type}.`);
   ensure(hash instanceof Array, `Invalid hash: ${hash}.`);
@@ -35,7 +35,7 @@ function encode(prefix, type, hash) {
  * 
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  */
-function decode(address) {
+export function decode(address) {
   ensure(typeof address === 'string', `Invalid address: ${address}.`);
   const pieces = address.split(':');
   ensure(pieces.length === 2, `Missing prefix: ${address}.`);
@@ -209,8 +209,8 @@ function validChecksum(prefix, payload) {
 function polymod(data) {
   const GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
   let checksum = bigInt(1);
-  for (let value of data) {
-    let topBits = checksum.shiftRight(35);
+  for (const value of data) {
+    const topBits = checksum.shiftRight(35);
     checksum = checksum.and(0x07ffffffff).shiftLeft(5).xor(value);
     for (let i = 0; i < GENERATOR.length; ++i) {
       if (topBits.shiftRight(i).and(1).equals(1)) {
@@ -220,8 +220,3 @@ function polymod(data) {
   }
   return checksum.xor(1);
 }
-
-module.exports = {
-  encode,
-  decode,
-};

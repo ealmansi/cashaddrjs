@@ -5,8 +5,11 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-export default function(condition, message) {
+export class ValidationError extends Error {
+} 
+
+export function validate(condition, message) {
   if (!condition) {
-    throw new Error(message);
+    throw new ValidationError(message);
   }
 }

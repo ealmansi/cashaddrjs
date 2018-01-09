@@ -9,7 +9,7 @@
 
 const Random = require('random-js');
 const assert = require('chai').assert;
-const base32 = require('../src/base32');
+const base32 = require('../lib/base32');
 
 describe('base32', () => {
 

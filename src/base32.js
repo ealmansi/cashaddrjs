@@ -5,7 +5,7 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-const ensure = require('./ensure');
+import ensure from './ensure';
 
 /***
  * Charset containing the 32 symbols used in the base32 encoding.
@@ -27,7 +27,7 @@ const CHARSET_INVERSE_INDEX = {
  *
  * @param {Array} data Array of integers between 0 and 31 inclusive.
  */
-function encode(data) {
+export function encode(data) {
   ensure(data instanceof Array, `Invalid data: ${data}.`);
   let base32 = '';
   for (const value of data) {
@@ -42,17 +42,12 @@ function encode(data) {
  *
  * @param {string} base32 
  */
-function decode(base32) {
+export function decode(base32) {
   ensure(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);
-  let data = [];
+  const data = [];
   for (const value of base32) {
     ensure(value in CHARSET_INVERSE_INDEX, `Invalid value: ${value}.`);
     data.push(CHARSET_INVERSE_INDEX[value]);
   }
   return data;
 }
-
-module.exports = {
-  encode,
-  decode,
-};

@@ -30,11 +30,11 @@
  * @param {number} to Length in bits of elements in the output array.
  * @param {bool} strict Require the conversion to be completed without padding.
  */
-module.exports = (data, from, to, strict = false) => {
+export default function(data, from, to, strict = false) {
+  const result = [];
+  const mask = (1 << to) - 1;
   let accumulator = 0;
   let bits = 0;
-  let result = [];
-  const mask = (1 << to) - 1;
   for (const value of data) {
     if (value < 0 || (value >> from) !== 0) {
       throw new Error(`Invalid value: ${value}.`);
@@ -54,4 +54,4 @@ module.exports = (data, from, to, strict = false) => {
     throw new Error('Conversion requires padding but strict mode was used.');
   }
   return result;
-};
+}
