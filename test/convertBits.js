@@ -10,6 +10,7 @@
 import Random from 'random-js';
 import { assert } from 'chai';
 import convertBits from '../lib/convertBits';
+import { ValidationError } from '../lib/validation';
 
 describe('#convertBits()', () => {
 
@@ -26,14 +27,14 @@ describe('#convertBits()', () => {
   it('should fail if it receives an invalid value', () => {
     assert.throws(() => {
       convertBits([100], 5, 8);
-    });
+    }, ValidationError);
   });
 
   it('should fail in strict mode if padding is needed', () => {
     const data = getRandomData(10, 31);
     assert.throws(() => {
       convertBits(data, 5, 8, true);
-    });
+    }, ValidationError);
   });
 
   it('should convert both ways successfully', () => {

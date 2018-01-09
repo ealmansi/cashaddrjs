@@ -5,8 +5,19 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-export class ValidationError extends Error {
-} 
+export function ValidationError(message) {
+  this.name = 'ValidationError';
+  this.message = message;
+  this.stack = (new Error()).stack;
+}
+
+ValidationError.prototype = Object.create(Error.prototype);
+
+ValidationError.prototype.constructor = ValidationError;
+
+ValidationError.prototype.toString = function() {
+  return `${this.name}: ${this.message}.`;
+};
 
 export function validate(condition, message) {
   if (!condition) {

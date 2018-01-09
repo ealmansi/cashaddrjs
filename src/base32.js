@@ -5,7 +5,7 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-import ensure from './ensure';
+import { validate } from './validation';
 
 /***
  * Charset containing the 32 symbols used in the base32 encoding.
@@ -28,10 +28,10 @@ const CHARSET_INVERSE_INDEX = {
  * @param {Array} data Array of integers between 0 and 31 inclusive.
  */
 export function encode(data) {
-  ensure(data instanceof Array, `Invalid data: ${data}.`);
+  validate(data instanceof Array, `Invalid data: ${data}.`);
   let base32 = '';
   for (const value of data) {
-    ensure(0 <= value && value < 32, `Invalid value: ${value}.`);
+    validate(0 <= value && value < 32, `Invalid value: ${value}.`);
     base32 += CHARSET[value];
   }
   return base32;
@@ -43,10 +43,10 @@ export function encode(data) {
  * @param {string} base32 
  */
 export function decode(base32) {
-  ensure(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);
+  validate(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);
   const data = [];
   for (const value of base32) {
-    ensure(value in CHARSET_INVERSE_INDEX, `Invalid value: ${value}.`);
+    validate(value in CHARSET_INVERSE_INDEX, `Invalid value: ${value}.`);
     data.push(CHARSET_INVERSE_INDEX[value]);
   }
   return data;

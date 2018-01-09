@@ -10,6 +10,7 @@
 import Random from 'random-js';
 import { assert } from 'chai';
 import * as cashaddr from '../lib/cashaddr';
+import { ValidationError } from '../lib/validation';
 
 describe('cashaddr', () => {
 
@@ -63,7 +64,7 @@ describe('cashaddr', () => {
     it('should fail on an invalid type', () => {
       assert.throws(() => {
         cashaddr.encode(NETWORKS[0], 'some invalid type', []);
-      });
+      }, ValidationError);
     });
 
     it('should fail on hashes of invalid length', () => {
@@ -71,7 +72,7 @@ describe('cashaddr', () => {
         const hash = getRandomHash(size - 1);
         assert.throws(() => {
           cashaddr.encode(NETWORKS[0], ADDRESS_TYPES[0], hash);
-        });
+        }, ValidationError);
       }
     });
 
@@ -106,13 +107,13 @@ describe('cashaddr', () => {
     it('should fail when the version byte is invalid', () => {
       assert.throws(() => {
         cashaddr.decode('bitcoincash:zpm2qsznhks23z7629mms6s4cwef74vcwvrqekrq9w');
-      });
+      }, ValidationError);
     });
 
     it('should fail when given an address with mixed case', () => {
       assert.throws(() => {
         cashaddr.decode('BitCOINcash:QPM2QSZNHKS23Z7629MMS6s4cwef74vcwvY22GDX6A');
-      });
+      }, ValidationError);
     });
 
     it('should decode a valid address regardless of case', () => {
@@ -131,7 +132,7 @@ describe('cashaddr', () => {
               const address = cashaddr.encode(network, ADDRESS_TYPES[0], hash);
               const invalidAddress = [anotherNetwork, address.split(':')[1]].join(':');
               cashaddr.decode(invalidAddress);
-            });
+            }, ValidationError);
           }
         } 
       }

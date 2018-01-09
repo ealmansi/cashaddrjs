@@ -7,7 +7,7 @@
  */
 
 import bigInt from 'big-integer';
-import ensure from './ensure';
+import { validate, ValidationError } from './validation';
 import * as base32 from './base32';
 import convertBits from './convertBits';
 
@@ -19,9 +19,9 @@ import convertBits from './convertBits';
  * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
  */
 export function encode(prefix, type, hash) {
-  ensure(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
-  ensure(typeof type === 'string', `Invalid type: ${type}.`);
-  ensure(hash instanceof Array, `Invalid hash: ${hash}.`);
+  validate(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
+  validate(typeof type === 'string', `Invalid type: ${type}.`);
+  validate(hash instanceof Array, `Invalid hash: ${hash}.`);
   const prefixData = prefixToArray(prefix).concat([0]);
   const versionByte = getTypeBits(type) + getHashSizeBits(hash);
   const payloadData = convertBits([versionByte].concat(hash), 8, 5);
@@ -36,19 +36,24 @@ export function encode(prefix, type, hash) {
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  */
 export function decode(address) {
-  ensure(typeof address === 'string', `Invalid address: ${address}.`);
+  validate(typeof address === 'string', `Invalid address: ${address}.`);
   const pieces = address.split(':');
-  ensure(pieces.length === 2, `Missing prefix: ${address}.`);
+  validate(pieces.length === 2, `Missing prefix: ${address}.`);
   const prefix = pieces[0];
   const encodedPayload = pieces[1];
-  ensure(hasSingleCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
+  validate(hasSingleCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
   const payload = base32.decode(encodedPayload.toLowerCase());
-  ensure(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
+  validate(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
   const [versionByte, ...hash] = convertBits(payload.slice(0, -8), 5, 8, true);
-  ensure(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
+  validate(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
   const type = getType(versionByte);
   return { prefix, type, hash };
 }
+
+/**
+ * 
+ */
+export { ValidationError };
 
 /***
  * Returns true if, and only if, the given string contains both uppercase
@@ -82,7 +87,7 @@ function getTypeBits(type) {
   case 'P2SH':
     return 8;
   default:
-    throw new Error(`Invalid type: ${type}.`);
+    throw new ValidationError(`Invalid type: ${type}.`);
   }
 }
 
@@ -99,7 +104,7 @@ function getType(versionByte) {
   case 8:
     return 'P2SH';
   default:
-    throw new Error(`Invalid address type in version byte: ${versionByte}.`);
+    throw new ValidationError(`Invalid address type in version byte: ${versionByte}.`);
   }
 }
 
@@ -128,7 +133,7 @@ function getHashSizeBits(hash) {
   case 512:
     return 7;
   default:
-    throw new Error(`Invalid hash size: ${hash.length}.`);
+    throw new ValidationError(`Invalid hash size: ${hash.length}.`);
   }
 }
 

@@ -19,6 +19,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+import { validate } from './validation';
+
 /**
  * Converts an array of integers made up of `from` bits into an
  * array of integers made up of `to` bits. The output array is
@@ -36,9 +38,7 @@ export default function(data, from, to, strict = false) {
   let accumulator = 0;
   let bits = 0;
   for (const value of data) {
-    if (value < 0 || (value >> from) !== 0) {
-      throw new Error(`Invalid value: ${value}.`);
-    }
+    validate(0 <= value && (value >> from) === 0, `Invalid value: ${value}.`);
     accumulator = (accumulator << from) | value;
     bits += from;
     while (bits >= to) {
@@ -50,8 +50,11 @@ export default function(data, from, to, strict = false) {
     if (bits > 0) {
       result.push((accumulator << (to - bits)) & mask);
     }
-  } else if (bits >= from || ((accumulator << (to - bits)) & mask)) {
-    throw new Error('Conversion requires padding but strict mode was used.');
+  } else {
+    validate(
+      bits < from && ((accumulator << (to - bits)) & mask) === 0,
+      'Conversion requires padding but strict mode was used.'
+    );
   }
   return result;
 }
