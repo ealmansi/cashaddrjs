@@ -1,3 +1,4 @@
+
 /***
  * https://github.com/bitcoincashjs/cashaddr
  * Copyright (c) 2017 Emilio Almansi
@@ -7,9 +8,9 @@
 
 /* global describe it */
 
-const Random = require('random-js');
-const assert = require('chai').assert;
-const base32 = require('../lib/base32');
+import { assert } from 'chai';
+import * as base32 from '../lib/base32';
+import Random from 'random-js';
 
 describe('base32', () => {
 

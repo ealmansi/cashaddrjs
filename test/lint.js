@@ -1,3 +1,4 @@
+
 /***
  * https://github.com/bitcoincashjs/cashaddr
  * Copyright (c) 2017 Emilio Almansi

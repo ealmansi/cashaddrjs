@@ -1,3 +1,4 @@
+
 /***
  * https://github.com/bitcoincashjs/cashaddr
  * Copyright (c) 2017 Emilio Almansi
@@ -7,10 +8,10 @@
 
 /* global describe it */
 
-import Random from 'random-js';
 import { assert } from 'chai';
-import * as cashaddr from '../lib/cashaddr';
 import { ValidationError } from '../lib/validation';
+import * as cashaddr from '../lib/cashaddr';
+import Random from 'random-js';
 
 describe('cashaddr', () => {
 
