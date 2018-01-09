@@ -1,3 +1,4 @@
+
 /***
  * https://github.com/bitcoincashjs/cashaddr
  * Copyright (c) 2017 Emilio Almansi
@@ -24,8 +25,10 @@ const CHARSET_INVERSE_INDEX = {
 
 /***
  * Encodes the given array of 5-bit integers as a base32-encoded string.
+ * Throws a {@link ValidationError} if input is invalid.
  *
  * @param {Array} data Array of integers between 0 and 31 inclusive.
+ * @returns {string}
  */
 export function encode(data) {
   validate(data instanceof Array, `Invalid data: ${data}.`);
@@ -39,8 +42,10 @@ export function encode(data) {
 
 /***
  * Decodes the given base32-encoded string into an array of 5-bit integers.
+ * Throws a {@link ValidationError} if input is invalid.
  *
- * @param {string} base32 
+ * @param {string} base32
+ * @returns {Array}
  */
 export function decode(base32) {
   validate(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);

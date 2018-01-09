@@ -1,3 +1,4 @@
+
 /***
  * @license
  * https://github.com/bitcoincashjs/cashaddr
@@ -6,17 +7,35 @@
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-import bigInt from 'big-integer';
-import { validate, ValidationError } from './validation';
+import { validate } from './validation';
 import * as base32 from './base32';
+import * as validation from './validation';
+import bigInt from 'big-integer';
 import convertBits from './convertBits';
 
 /**
+ * Encoding and decoding of the new Cash Address format for Bitcoin Cash. <br />
+ * Compliant with the original cashaddr specification:
+ * {@link https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md}
+ * @module cashaddr
+ */
+
+/**
+ * Error thrown when encoding or decoding fail due to invalid input.
+ *
+ * @constructor ValidationError
+ * @param {string} message Error description.
+ */
+export const ValidationError = validation.ValidationError;
+
+/**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
+ * Throws a {@link ValidationError} if input is invalid.
  * 
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
  * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
+ * @returns {string}
  */
 export function encode(prefix, type, hash) {
   validate(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
@@ -32,8 +51,10 @@ export function encode(prefix, type, hash) {
 
 /**
  * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
- * 
+ * Throws a {@link ValidationError} if input is invalid.
+ *
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
+ * @returns {object}
  */
 export function decode(address) {
   validate(typeof address === 'string', `Invalid address: ${address}.`);
@@ -41,7 +62,7 @@ export function decode(address) {
   validate(pieces.length === 2, `Missing prefix: ${address}.`);
   const prefix = pieces[0];
   const encodedPayload = pieces[1];
-  validate(hasSingleCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
+  validate(!hasMixedCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
   const payload = base32.decode(encodedPayload.toLowerCase());
   validate(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
   const [versionByte, ...hash] = convertBits(payload.slice(0, -8), 5, 8, true);
@@ -51,34 +72,33 @@ export function decode(address) {
 }
 
 /**
- * 
- */
-export { ValidationError };
-
-/***
  * Returns true if, and only if, the given string contains both uppercase
  * and lowercase letters.
  *
- * @param {string} string Input string. 
+ * @private
+ * @param {string} string Input string.
+ * @returns {boolean}
  */
-function hasSingleCase(string) {
+function hasMixedCase(string) {
   let hasLowercase = false;
   let hasUppercase = false;
   for (const letter of string) {
     hasLowercase = hasLowercase || letter !== letter.toUpperCase();
     hasUppercase = hasUppercase || letter !== letter.toLowerCase();
     if (hasLowercase && hasUppercase) {
-      return false;
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
-/***
+/**
  * Returns the bit representation of the given type within the version
  * byte.
  *
+ * @private
  * @param {string} type Address type. Either 'P2PKH' or 'P2SH'.
+ * @returns {number}
  */
 function getTypeBits(type) {
   switch (type) {
@@ -91,11 +111,13 @@ function getTypeBits(type) {
   }
 }
 
-/***
+/**
  * Retrieves the address type from its bit representation within the
  * version byte.
  *
- * @param {number} versionByte 
+ * @private
+ * @param {number} versionByte
+ * @returns {string}
  */
 function getType(versionByte) {
   switch (versionByte & 120) {
@@ -108,11 +130,13 @@ function getType(versionByte) {
   }
 }
 
-/***
+/**
  * Returns the bit representation of the length in bits of the given
  * hash within the version byte.
  *
+ * @private
  * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
+ * @returns {number}
  */
 function getHashSizeBits(hash) {
   switch (hash.length * 8) {
@@ -137,11 +161,13 @@ function getHashSizeBits(hash) {
   }
 }
 
-/***
+/**
  * Retrieves the the length in bits of the encoded hash from its bit
  * representation within the version byte.
  *
- * @param {number} versionByte 
+ * @private
+ * @param {number} versionByte
+ * @returns {number}
  */
 function getHashSize(versionByte) {
   switch (versionByte & 7) {
@@ -164,11 +190,13 @@ function getHashSize(versionByte) {
   }
 }
 
-/***
+/**
  * Derives an array from the given prefix to be used in the computation
  * of the address' checksum.
  *
+ * @private
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
+ * @returns {Array}
  */
 function prefixToArray(prefix) {
   const result = [];
@@ -178,11 +206,13 @@ function prefixToArray(prefix) {
   return result;
 }
 
-/***
+/**
  * Returns an array representation of the given checksum to be encoded
  * within the address' payload.
  *
+ * @private
  * @param {BigInteger} checksum Computed checksum.
+ * @returns {Array}
  */
 function checksumToArray(checksum) {
   const result = [];
@@ -193,23 +223,27 @@ function checksumToArray(checksum) {
   return result.reverse();
 }
 
-/***
+/**
  * Verify that the payload has not been corrupted by checking that the
  * checksum is valid.
  * 
+ * @private
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {Array} payload Array of 5-bit integers containing the address' payload.
+ * @returns {boolean}
  */
 function validChecksum(prefix, payload) {
   const prefixData = prefixToArray(prefix).concat([0]);
   return polymod(prefixData.concat(payload)).equals(0);
 }
 
-/***
+/**
  * Computes a checksum from the given input data as specified for the CashAddr
  * format: https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md.
  *
+ * @private
  * @param {Array} data Array of 5-bit integers over which the checksum is to be computed.
+ * @returns {BigInteger}
  */
 function polymod(data) {
   const GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];

@@ -1,3 +1,4 @@
+
 // Copyright (c) 2017 Emilio Almansi
 // Copyright (c) 2017 Pieter Wuille
 //
@@ -25,12 +26,14 @@ import { validate } from './validation';
  * Converts an array of integers made up of `from` bits into an
  * array of integers made up of `to` bits. The output array is
  * zero-padded if necessary, unless strict mode is true.
+ * Throws a {@link ValidationError} if input is invalid.
  * Original by Pieter Wuille: https://github.com/sipa/bech32.
  *
  * @param {Array} data Array of integers made up of `from` bits.
  * @param {number} from Length in bits of elements in the input array.
  * @param {number} to Length in bits of elements in the output array.
  * @param {bool} strict Require the conversion to be completed without padding.
+ * @returns {Array}
  */
 export default function(data, from, to, strict = false) {
   const result = [];
@@ -53,7 +56,7 @@ export default function(data, from, to, strict = false) {
   } else {
     validate(
       bits < from && ((accumulator << (to - bits)) & mask) === 0,
-      'Conversion requires padding but strict mode was used.'
+      `Input cannot be converted to ${to} bits without padding, but strict mode was used.`
     );
   }
   return result;
