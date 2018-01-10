@@ -24,14 +24,14 @@ $ bower install --save cashaddrjs
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.2.0.min.js](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.0.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.2.1.min.js](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.1.min.js).
 
 ## Usage
 
 ### In Node.js
 
 ```javascript
-const cashaddr = require('.');
+const cashaddr = require('cashaddrjs');
 const address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a';
 const { prefix, type, hash } = cashaddr.decode(address);
 console.log(prefix); // 'bitcoincash'
@@ -50,7 +50,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 <html>
   <head>
     ...
-    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.0.min.js"></script>
+    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.1.min.js"></script>
   </head>
   ...
 </html>
