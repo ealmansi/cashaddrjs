@@ -29,15 +29,19 @@ import { validate } from './validation';
  * Throws a {@link ValidationError} if input is invalid.
  * Original by Pieter Wuille: https://github.com/sipa/bech32.
  *
- * @param {Array} data Array of integers made up of `from` bits.
+ * @param {Uint8Array} data Array of integers made up of `from` bits.
  * @param {number} from Length in bits of elements in the input array.
  * @param {number} to Length in bits of elements in the output array.
  * @param {bool} strict Require the conversion to be completed without padding.
- * @returns {Array}
+ * @returns {Uint8Array}
  */
 export default function(data, from, to, strict = false) {
-  const result = [];
+  const length = strict
+    ? Math.floor(data.length * from / to)
+    : Math.ceil(data.length * from / to);
   const mask = (1 << to) - 1;
+  const result = new Uint8Array(length);
+  let index = 0;
   let accumulator = 0;
   let bits = 0;
   for (const value of data) {
@@ -46,12 +50,14 @@ export default function(data, from, to, strict = false) {
     bits += from;
     while (bits >= to) {
       bits -= to;
-      result.push((accumulator >> bits) & mask);
+      result[index] = (accumulator >> bits) & mask;
+      ++index;
     }
   }
   if (!strict) {
     if (bits > 0) {
-      result.push((accumulator << (to - bits)) & mask);
+      result[index] = (accumulator << (to - bits)) & mask;
+      ++index;
     }
   } else {
     validate(

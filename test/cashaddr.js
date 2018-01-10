@@ -9,8 +9,8 @@
 /* global describe it */
 
 import { assert } from 'chai';
-import { ValidationError } from '../lib/validation';
-import * as cashaddr from '../lib/cashaddr';
+import { ValidationError } from '../src/validation';
+import * as cashaddr from '../src/cashaddr';
 import Random from 'random-js';
 
 describe('cashaddr', () => {
@@ -22,9 +22,9 @@ describe('cashaddr', () => {
   const VALID_SIZES = [20, 24, 28, 32, 40, 48, 56, 64];
 
   const TEST_HASHES = [
-    [118, 160, 64,  83, 189, 160, 168, 139, 218, 81, 119, 184, 106, 21, 195, 178, 159, 85,  152, 115],
-    [203, 72, 18, 50, 41,  156, 213, 116, 49,  81, 172, 75, 45, 99, 174, 25,  142, 123, 176, 169],
-    [1,   31, 40,  228, 115, 201, 95, 64,  19,  215, 213, 62, 197, 251, 195, 180, 45, 248, 237, 16],
+    Uint8Array.of(118, 160, 64,  83, 189, 160, 168, 139, 218, 81, 119, 184, 106, 21, 195, 178, 159, 85,  152, 115),
+    Uint8Array.of(203, 72, 18, 50, 41,  156, 213, 116, 49,  81, 172, 75, 45, 99, 174, 25,  142, 123, 176, 169),
+    Uint8Array.of(1,   31, 40,  228, 115, 201, 95, 64,  19,  215, 213, 62, 197, 251, 195, 180, 45, 248, 237, 16),
   ];
   
   const EXPECTED_P2PKH_OUTPUTS = [
@@ -54,9 +54,9 @@ describe('cashaddr', () => {
   const random = new Random(Random.engines.mt19937().seed(42));
 
   function getRandomHash(size) {
-    const hash = [];
+    const hash = new Uint8Array(size);
     for (let i = 0; i < size; ++i) {
-      hash.push(random.integer(0, 255));
+      hash[i] = random.integer(0, 255);
     }
     return hash;
   }
@@ -64,7 +64,7 @@ describe('cashaddr', () => {
   describe('#encode()', () => {
     it('should fail on an invalid type', () => {
       assert.throws(() => {
-        cashaddr.encode(NETWORKS[0], 'some invalid type', []);
+        cashaddr.encode(NETWORKS[0], 'some invalid type', Uint8Array.of());
       }, ValidationError);
     });
 

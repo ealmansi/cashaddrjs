@@ -12,13 +12,13 @@ Compliant with the original CashAddr [specification](https://github.com/Bitcoin-
 
 ### Using NPM
 
-```s
+```bsh
 $ npm install --save cashaddrjs
 ```
 
 ### Using Bower
 
-```s
+```bsh
 $ bower install --save cashaddrjs
 ```
 
@@ -31,22 +31,13 @@ You may also download the distribution file manually and place it within your th
 ### In Node.js
 
 ```javascript
-const cashaddr = require('cashaddrjs');
-
-const hash = [
-  118, 160, 64,  83, 189,
-  160, 168, 139, 218, 81,
-  119, 184, 106, 21, 195,
-  178, 159, 85,  152, 115
-];
-
-const address = cashaddr.encode('bitcoincash', 'P2PKH', hash);
-console.log(address); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
-
-const decoded = cashaddr.decode(address);
-console.log(decoded.prefix); // 'bitcoincash'
-console.log(decoded.type); // 'P2PKH'
-console.log(decoded.hash); // [ 118, 160, ..., 115 ]
+const cashaddr = require('.');
+const address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a';
+const { prefix, type, hash } = cashaddr.decode(address);
+console.log(prefix); // 'bitcoincash'
+console.log(type); // 'P2PKH'
+console.log(hash); // Uint8Array [ 118, 160, ..., 115 ]
+console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
 ```
 
 ### Browser
@@ -69,7 +60,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 
 ### Generate and Browse Locally
 
-```s
+```bsh
 $ npm run docs
 ```
 

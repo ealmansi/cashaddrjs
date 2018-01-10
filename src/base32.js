@@ -27,11 +27,11 @@ const CHARSET_INVERSE_INDEX = {
  * Encodes the given array of 5-bit integers as a base32-encoded string.
  * Throws a {@link ValidationError} if input is invalid.
  *
- * @param {Array} data Array of integers between 0 and 31 inclusive.
+ * @param {Uint8Array} data Array of integers between 0 and 31 inclusive.
  * @returns {string}
  */
 export function encode(data) {
-  validate(data instanceof Array, `Invalid data: ${data}.`);
+  validate(data instanceof Uint8Array, `Invalid data: ${data}.`);
   let base32 = '';
   for (const value of data) {
     validate(0 <= value && value < 32, `Invalid value: ${value}.`);
@@ -45,14 +45,15 @@ export function encode(data) {
  * Throws a {@link ValidationError} if input is invalid.
  *
  * @param {string} base32
- * @returns {Array}
+ * @returns {Uint8Array}
  */
 export function decode(base32) {
   validate(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);
-  const data = [];
-  for (const value of base32) {
+  const data = new Uint8Array(base32.length);
+  for (let i = 0; i < base32.length; ++i) {
+    const value = base32[i];
     validate(value in CHARSET_INVERSE_INDEX, `Invalid value: ${value}.`);
-    data.push(CHARSET_INVERSE_INDEX[value]);
+    data[i] = CHARSET_INVERSE_INDEX[value];
   }
   return data;
 }

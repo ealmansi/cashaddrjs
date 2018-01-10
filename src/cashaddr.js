@@ -34,18 +34,18 @@ export const ValidationError = validation.ValidationError;
  * 
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
- * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
+ * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
  * @returns {string}
  */
 export function encode(prefix, type, hash) {
   validate(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
   validate(typeof type === 'string', `Invalid type: ${type}.`);
-  validate(hash instanceof Array, `Invalid hash: ${hash}.`);
-  const prefixData = prefixToArray(prefix).concat([0]);
+  validate(hash instanceof Uint8Array, `Invalid hash: ${hash}.`);
+  const prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   const versionByte = getTypeBits(type) + getHashSizeBits(hash);
-  const payloadData = convertBits([versionByte].concat(hash), 8, 5);
-  const checksumData = prefixData.concat(payloadData).concat(new Array(8).fill(0));
-  const payload = payloadData.concat(checksumToArray(polymod(checksumData)));
+  const payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
+  const checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
+  const payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
   return `${prefix}:${base32.encode(payload)}`;
 }
 
@@ -65,36 +65,51 @@ export function decode(address) {
   validate(!hasMixedCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
   const payload = base32.decode(encodedPayload.toLowerCase());
   validate(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
-  const [versionByte, ...hash] = convertBits(payload.slice(0, -8), 5, 8, true);
+  const payloadData = fromUint5Array(payload.slice(0, -8));
+  const versionByte = payloadData[0];
+  const hash = payloadData.slice(1);
   validate(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
   const type = getType(versionByte);
   return { prefix, type, hash };
 }
 
 /**
- * Returns true if, and only if, the given string contains both uppercase
- * and lowercase letters.
+ * Derives an array from the given prefix to be used in the computation
+ * of the address' checksum.
  *
  * @private
- * @param {string} string Input string.
- * @returns {boolean}
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
+ * @returns {Uint8Array}
  */
-function hasMixedCase(string) {
-  let hasLowercase = false;
-  let hasUppercase = false;
-  for (const letter of string) {
-    hasLowercase = hasLowercase || letter !== letter.toUpperCase();
-    hasUppercase = hasUppercase || letter !== letter.toLowerCase();
-    if (hasLowercase && hasUppercase) {
-      return true;
-    }
+function prefixToUint5Array(prefix) {
+  const result = new Uint8Array(prefix.length);
+  for (let i = 0; i < prefix.length; ++i) {
+    result[i] = prefix[i].charCodeAt(0) & 31;
   }
-  return false;
+  return result;
+}
+
+/**
+ * Returns an array representation of the given checksum to be encoded
+ * within the address' payload.
+ *
+ * @private
+ * @param {BigInteger} checksum Computed checksum.
+ * @returns {Uint8Array}
+ */
+function checksumToUint5Array(checksum) {
+  const result = new Uint8Array(8);
+  for (let i = 0; i < 8; ++i) {
+    result[i] = checksum.and(31).toJSNumber();
+    checksum = checksum.shiftRight(5);
+  }
+  return result.reverse();
 }
 
 /**
  * Returns the bit representation of the given type within the version
  * byte.
+ * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
  * @param {string} type Address type. Either 'P2PKH' or 'P2SH'.
@@ -114,6 +129,7 @@ function getTypeBits(type) {
 /**
  * Retrieves the address type from its bit representation within the
  * version byte.
+ * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
  * @param {number} versionByte
@@ -133,9 +149,10 @@ function getType(versionByte) {
 /**
  * Returns the bit representation of the length in bits of the given
  * hash within the version byte.
+ * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
- * @param {Array} hash Hash to encode represented as an array of 8-bit integers.
+ * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
  * @returns {number}
  */
 function getHashSizeBits(hash) {
@@ -191,50 +208,43 @@ function getHashSize(versionByte) {
 }
 
 /**
- * Derives an array from the given prefix to be used in the computation
- * of the address' checksum.
+ * Converts an array of 8-bit integers into an array of 5-bit integers,
+ * right-padding with zeroes if necessary.
  *
  * @private
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
- * @returns {Array}
+ * @param {Uint8Array} data
+ * @returns {Uint8Array}
  */
-function prefixToArray(prefix) {
-  const result = [];
-  for (const letter of prefix) {
-    result.push(letter.charCodeAt(0) & 31);
-  }
-  return result;
+function toUint5Array(data) {
+  return convertBits(data, 8, 5);
 }
 
 /**
- * Returns an array representation of the given checksum to be encoded
- * within the address' payload.
+ * Converts an array of 5-bit integers back into an array of 8-bit integers,
+ * removing extra zeroes left from padding if necessary.
+ * Throws a {@link ValidationError} if input is not a zero-padded array of 8-bit integers.
  *
  * @private
- * @param {BigInteger} checksum Computed checksum.
- * @returns {Array}
+ * @param {Uint8Array} data
+ * @returns {Uint8Array}
  */
-function checksumToArray(checksum) {
-  const result = [];
-  for (let i = 0; i < 8; ++i) {
-    result.push(checksum.and(31).toJSNumber());
-    checksum = checksum.shiftRight(5);
-  }
-  return result.reverse();
+function fromUint5Array(data) {
+  return convertBits(data, 5, 8, true);
 }
 
 /**
- * Verify that the payload has not been corrupted by checking that the
- * checksum is valid.
- * 
+ * Returns the concatenation a and b.
+ *
  * @private
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
- * @param {Array} payload Array of 5-bit integers containing the address' payload.
- * @returns {boolean}
+ * @param {Uint8Array} a 
+ * @param {Uint8Array} b 
+ * @returns {Uint8Array}
  */
-function validChecksum(prefix, payload) {
-  const prefixData = prefixToArray(prefix).concat([0]);
-  return polymod(prefixData.concat(payload)).equals(0);
+function concat(a, b) {
+  const ab = new Uint8Array(a.length + b.length);
+  ab.set(a);
+  ab.set(b, a.length);
+  return ab;
 }
 
 /**
@@ -242,7 +252,7 @@ function validChecksum(prefix, payload) {
  * format: https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md.
  *
  * @private
- * @param {Array} data Array of 5-bit integers over which the checksum is to be computed.
+ * @param {Uint8Array} data Array of 5-bit integers over which the checksum is to be computed.
  * @returns {BigInteger}
  */
 function polymod(data) {
@@ -258,4 +268,40 @@ function polymod(data) {
     }
   }
   return checksum.xor(1);
+}
+
+/**
+ * Verify that the payload has not been corrupted by checking that the
+ * checksum is valid.
+ * 
+ * @private
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
+ * @param {Uint8Array} payload Array of 5-bit integers containing the address' payload.
+ * @returns {boolean}
+ */
+function validChecksum(prefix, payload) {
+  const prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
+  const checksumData = concat(prefixData, payload);
+  return polymod(checksumData).equals(0);
+}
+
+/**
+ * Returns true if, and only if, the given string contains both uppercase
+ * and lowercase letters.
+ *
+ * @private
+ * @param {string} string Input string.
+ * @returns {boolean}
+ */
+function hasMixedCase(string) {
+  let hasLowercase = false;
+  let hasUppercase = false;
+  for (const letter of string) {
+    hasLowercase = hasLowercase || letter !== letter.toUpperCase();
+    hasUppercase = hasUppercase || letter !== letter.toLowerCase();
+    if (hasLowercase && hasUppercase) {
+      return true;
+    }
+  }
+  return false;
 }

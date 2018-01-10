@@ -9,8 +9,8 @@
 /* global describe it */
 
 import { assert } from 'chai';
-import { ValidationError } from '../lib/validation';
-import convertBits from '../lib/convertBits';
+import { ValidationError } from '../src/validation';
+import convertBits from '../src/convertBits';
 import Random from 'random-js';
 
 describe('#convertBits()', () => {
@@ -18,9 +18,9 @@ describe('#convertBits()', () => {
   const random = new Random(Random.engines.mt19937().seed(42));
 
   function getRandomData(size, max) {
-    const data = [];
+    const data = new Uint8Array(size);
     for (let i = 0; i < size; ++i) {
-      data.push(random.integer(0, max));
+      data[i] = random.integer(0, max);
     }
     return data;
   }

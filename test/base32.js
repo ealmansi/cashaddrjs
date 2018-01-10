@@ -9,7 +9,8 @@
 /* global describe it */
 
 import { assert } from 'chai';
-import * as base32 from '../lib/base32';
+import { ValidationError } from '../src/validation';
+import * as base32 from '../src/base32';
 import Random from 'random-js';
 
 describe('base32', () => {
@@ -17,9 +18,9 @@ describe('base32', () => {
   const random = new Random(Random.engines.mt19937().seed(42));
 
   function getRandomData(size) {
-    const data = [];
+    const data = new Uint8Array(size);
     for (let i = 0; i < size; ++i) {
-      data.push(random.integer(0, 31));
+      data[i] = random.integer(0, 31);
     }
     return data;
   }
@@ -30,9 +31,10 @@ describe('base32', () => {
         undefined,
         'some string',
         1234.567,
+        Uint8Array.of(100, 2, 3, 4),
       ];
       for (const input of INVALID_INPUTS) {
-        assert.throws(() => base32.encode(input));
+        assert.throws(() => base32.encode(input), ValidationError);
       }
     });
 
@@ -52,7 +54,7 @@ describe('base32', () => {
         'b',
       ];
       for (const input of INVALID_INPUTS) {
-        assert.throws(() => base32.decode(input));
+        assert.throws(() => base32.decode(input), ValidationError);
       }
     });
 
@@ -68,7 +70,8 @@ describe('base32', () => {
       const NUM_TESTS = 2000;
       for (let i = 0; i < NUM_TESTS; ++i) {
         const data = getRandomData(1000);
-        assert.deepEqual(base32.decode(base32.encode(data)), data);
+        const x = base32.encode(data);
+        assert.deepEqual(base32.decode(x), data);
       }
     });
   });
