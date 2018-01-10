@@ -68,4 +68,4 @@ $ npm run docs
 
 ### Online
 
-Browse automatically generated jsdocs [online](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/docs/global.html#encode).
+Browse automatically generated jsdocs [online](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/docs/index.html).
