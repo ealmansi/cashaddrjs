@@ -8,6 +8,8 @@ JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
 
 Compliant with the original CashAddr [specification](https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
 
+You can try out a general purpose Bitcoin Cash address translator using CashAddr.js [here](https://bitcoincashjs.github.io/address/).
+
 ## Installation
 
 ### Using NPM
