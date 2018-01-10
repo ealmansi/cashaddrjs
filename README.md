@@ -8,6 +8,8 @@ JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
 
 Compliant with the original CashAddr [specification](https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
 
+You can try out a general purpose Bitcoin Cash address translator using CashAddr.js [here](https://bitcoincashjs.github.io/address/).
+
 ## Installation
 
 ### Using NPM
@@ -24,7 +26,7 @@ $ bower install --save cashaddrjs
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.2.1.min.js](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.1.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.2.2.min.js](https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.2.min.js).
 
 ## Usage
 
@@ -50,7 +52,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 <html>
   <head>
     ...
-    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.1.min.js"></script>
+    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.2.min.js"></script>
   </head>
   ...
 </html>
