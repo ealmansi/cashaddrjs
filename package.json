@@ -15,7 +15,8 @@
     "preversion": "npm test",
     "version": "node scripts/version.js",
     "postversion": "node scripts/postversion.js",
-    "bump": "npm version patch -m 'Bump version to %s.'"
+    "bump": "npm version patch -m 'Bump version to %s.'",
+    "bump:minor": "npm version minor -m 'Bump version to %s.'"
   },
   "repository": {
     "type": "git",
