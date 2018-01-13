@@ -62,6 +62,18 @@ describe('cashaddr', () => {
   }
 
   describe('#encode()', () => {
+    it('should fail on an invalid prefix', () => {
+      assert.throws(() => {
+        cashaddr.encode('some invalid prefix', ADDRESS_TYPES[0], Uint8Array.of());
+      }, ValidationError);
+    });
+
+    it('should fail on a prefix with mixed letter case', () => {
+      assert.throws(() => {
+        cashaddr.encode('BiTcOiNcAsH', ADDRESS_TYPES[0], Uint8Array.of());
+      }, ValidationError);
+    });
+
     it('should fail on an invalid type', () => {
       assert.throws(() => {
         cashaddr.encode(NETWORKS[0], 'some invalid type', Uint8Array.of());
@@ -111,13 +123,19 @@ describe('cashaddr', () => {
       }, ValidationError);
     });
 
-    it('should fail when given an address with mixed case', () => {
+    it('should fail when given an address with mixed letter case', () => {
+      assert.throws(() => {
+        cashaddr.decode('bitcoincash:QPM2QSZNHKS23Z7629MMS6s4cwef74vcwvY22GDX6A');
+      }, ValidationError);
+      assert.throws(() => {
+        cashaddr.decode('BitCOINcash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a');
+      }, ValidationError);
       assert.throws(() => {
         cashaddr.decode('BitCOINcash:QPM2QSZNHKS23Z7629MMS6s4cwef74vcwvY22GDX6A');
       }, ValidationError);
     });
 
-    it('should decode a valid address regardless of case', () => {
+    it('should decode a valid address regardless of letter case', () => {
       assert.deepEqual(
         cashaddr.decode('bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a').hash,
         cashaddr.decode('BITCOINCASH:QPM2QSZNHKS23Z7629MMS6S4CWEF74VCWVY22GDX6A').hash

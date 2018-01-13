@@ -13,6 +13,8 @@ import * as validation from './validation';
 import bigInt from 'big-integer';
 import convertBits from './convertBits';
 
+const VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+
 /**
  * Encoding and decoding of the new Cash Address format for Bitcoin Cash. <br />
  * Compliant with the original cashaddr specification:
@@ -38,7 +40,7 @@ export const ValidationError = validation.ValidationError;
  * @returns {string}
  */
 export function encode(prefix, type, hash) {
-  validate(typeof prefix === 'string', `Invalid prefix: ${prefix}.`);
+  validate(typeof prefix === 'string' && isValidPrefix(prefix), `Invalid prefix: ${prefix}.`);
   validate(typeof type === 'string', `Invalid type: ${type}.`);
   validate(hash instanceof Uint8Array, `Invalid hash: ${hash}.`);
   const prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
@@ -57,13 +59,11 @@ export function encode(prefix, type, hash) {
  * @returns {object}
  */
 export function decode(address) {
-  validate(typeof address === 'string', `Invalid address: ${address}.`);
-  const pieces = address.split(':');
+  validate(typeof address === 'string' && hasSingleCase(address), `Invalid address: ${address}.`);
+  const pieces = address.toLowerCase().split(':');
   validate(pieces.length === 2, `Missing prefix: ${address}.`);
   const prefix = pieces[0];
-  const encodedPayload = pieces[1];
-  validate(!hasMixedCase(encodedPayload), `Mixed case in address payload: ${encodedPayload}.`);
-  const payload = base32.decode(encodedPayload.toLowerCase());
+  const payload = base32.decode(pieces[1]);
   validate(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
   const payloadData = fromUint5Array(payload.slice(0, -8));
   const versionByte = payloadData[0];
@@ -71,6 +71,18 @@ export function decode(address) {
   validate(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
   const type = getType(versionByte);
   return { prefix, type, hash };
+}
+
+/**
+ * Checks whether a string is a valid prefix; ie., it has a single letter case
+ * and is one of 'bitcoincash', 'bchtest', or 'bchreg'.
+ *
+ * @private
+ * @param {string} prefix 
+ * @returns {boolean}
+ */
+function isValidPrefix(prefix) {
+  return hasSingleCase(prefix) && VALID_PREFIXES.includes(prefix.toLowerCase());
 }
 
 /**
@@ -286,22 +298,22 @@ function validChecksum(prefix, payload) {
 }
 
 /**
- * Returns true if, and only if, the given string contains both uppercase
- * and lowercase letters.
+ * Returns true if, and only if, the given string contains either uppercase
+ * or lowercase letters, but not both.
  *
  * @private
  * @param {string} string Input string.
  * @returns {boolean}
  */
-function hasMixedCase(string) {
+function hasSingleCase(string) {
   let hasLowercase = false;
   let hasUppercase = false;
   for (const letter of string) {
     hasLowercase = hasLowercase || letter !== letter.toUpperCase();
     hasUppercase = hasUppercase || letter !== letter.toLowerCase();
     if (hasLowercase && hasUppercase) {
-      return true;
+      return false;
     }
   }
-  return false;
+  return true;
 }
