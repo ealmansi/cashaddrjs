@@ -112,10 +112,10 @@ function prefixToUint5Array(prefix) {
 function checksumToUint5Array(checksum) {
   const result = new Uint8Array(8);
   for (let i = 0; i < 8; ++i) {
-    result[i] = checksum.and(31).toJSNumber();
+    result[7 - i] = checksum.and(31).toJSNumber();
     checksum = checksum.shiftRight(5);
   }
-  return result.reverse();
+  return result;
 }
 
 /**
