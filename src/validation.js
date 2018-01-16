@@ -13,10 +13,6 @@
  *
  * @module validation
  */
-module.exports = {
-  ValidationError: ValidationError,
-  validate: validate,
-};
 
 /**
  * Error thrown when encoding or decoding fail due to invalid input.
@@ -37,6 +33,7 @@ ValidationError.prototype = Object.create(Error.prototype);
  * Validates a given condition, throwing a {@link ValidationError} if
  * the given condition does not hold.
  *
+ * @static
  * @param {boolean} condition Condition to validate.
  * @param {string} message Error message in case the condition does not hold.
  */
@@ -45,3 +42,8 @@ function validate(condition, message) {
     throw new ValidationError(message);
   }
 }
+
+module.exports = {
+  ValidationError: ValidationError,
+  validate: validate,
+};

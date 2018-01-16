@@ -8,7 +8,6 @@
 /* global describe it */
 
 import { assert } from 'chai';
-import { ValidationError } from '../src/validation';
 import * as cashaddr from '../src/cashaddr';
 import Random from 'random-js';
 
@@ -64,19 +63,19 @@ describe('cashaddr', () => {
     it('should fail on an invalid prefix', () => {
       assert.throws(() => {
         cashaddr.encode('some invalid prefix', ADDRESS_TYPES[0], Uint8Array.of());
-      }, ValidationError);
+      }, cashaddr.ValidationError);
     });
 
     it('should fail on a prefix with mixed letter case', () => {
       assert.throws(() => {
         cashaddr.encode('BiTcOiNcAsH', ADDRESS_TYPES[0], Uint8Array.of());
-      }, ValidationError);
+      }, cashaddr.ValidationError);
     });
 
     it('should fail on an invalid type', () => {
       assert.throws(() => {
         cashaddr.encode(NETWORKS[0], 'some invalid type', Uint8Array.of());
-      }, ValidationError);
+      }, cashaddr.ValidationError);
     });
 
     it('should fail on hashes of invalid length', () => {
@@ -84,7 +83,7 @@ describe('cashaddr', () => {
         const hash = getRandomHash(size - 1);
         assert.throws(() => {
           cashaddr.encode(NETWORKS[0], ADDRESS_TYPES[0], hash);
-        }, ValidationError);
+        }, cashaddr.ValidationError);
       }
     });
 
@@ -119,19 +118,19 @@ describe('cashaddr', () => {
     it('should fail when the version byte is invalid', () => {
       assert.throws(() => {
         cashaddr.decode('bitcoincash:zpm2qsznhks23z7629mms6s4cwef74vcwvrqekrq9w');
-      }, ValidationError);
+      }, cashaddr.ValidationError);
     });
 
     it('should fail when given an address with mixed letter case', () => {
       assert.throws(() => {
         cashaddr.decode('bitcoincash:QPM2QSZNHKS23Z7629MMS6s4cwef74vcwvY22GDX6A');
-      }, ValidationError);
+      }, cashaddr.ValidationError);
       assert.throws(() => {
         cashaddr.decode('BitCOINcash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a');
-      }, ValidationError);
+      }, cashaddr.ValidationError);
       assert.throws(() => {
         cashaddr.decode('BitCOINcash:QPM2QSZNHKS23Z7629MMS6s4cwef74vcwvY22GDX6A');
-      }, ValidationError);
+      }, cashaddr.ValidationError);
     });
 
     it('should decode a valid address regardless of letter case', () => {
@@ -150,7 +149,7 @@ describe('cashaddr', () => {
               const address = cashaddr.encode(network, ADDRESS_TYPES[0], hash);
               const invalidAddress = [anotherNetwork, address.split(':')[1]].join(':');
               cashaddr.decode(invalidAddress);
-            }, ValidationError);
+            }, cashaddr.ValidationError);
           }
         } 
       }

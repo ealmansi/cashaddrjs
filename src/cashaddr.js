@@ -20,11 +20,6 @@ var validate = validation.validate;
  * {@link https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md}
  * @module cashaddr
  */
-module.exports = {
-  encode: encode,
-  decode: decode,
-  ValidationError: ValidationError,
-};
 
 /**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
@@ -328,3 +323,9 @@ function validChecksum(prefix, payload) {
 function hasSingleCase(string) {
   return string === string.toLowerCase() || string === string.toUpperCase();
 }
+
+module.exports = {
+  encode: encode,
+  decode: decode,
+  ValidationError: ValidationError,
+};

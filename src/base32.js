@@ -15,15 +15,16 @@ var validate = require('./validation').validate;
  *
  * @module base32
  */
-var base32 = module.exports;
 
-/***
+/**
  * Charset containing the 32 symbols used in the base32 encoding.
+ * @private
  */
 var CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 
-/***
+/**
  * Inverted index mapping each symbol into its index within the charset.
+ * @private
  */
 var CHARSET_INVERSE_INDEX = {
   'q': 0, 'p': 1, 'z': 2, 'r': 3, 'y': 4, '9': 5, 'x': 6, '8': 7,
@@ -32,14 +33,15 @@ var CHARSET_INVERSE_INDEX = {
   'c': 24, 'e': 25, '6': 26, 'm': 27, 'u': 28, 'a': 29, '7': 30, 'l': 31,
 };
 
-/***
+/**
  * Encodes the given array of 5-bit integers as a base32-encoded string.
- * Throws a {@link ValidationError} if input is invalid.
  *
+ * @static
  * @param {Uint8Array} data Array of integers between 0 and 31 inclusive.
  * @returns {string}
+ * @throws {ValidationError}
  */
-base32.encode = function(data) {
+function encode(data) {
   validate(data instanceof Uint8Array, 'Invalid data: ' + data + '.');
   var base32 = '';
   for (var i = 0; i < data.length; ++i) {
@@ -48,16 +50,17 @@ base32.encode = function(data) {
     base32 += CHARSET[value];
   }
   return base32;
-};
+}
 
-/***
+/**
  * Decodes the given base32-encoded string into an array of 5-bit integers.
- * Throws a {@link ValidationError} if input is invalid.
  *
+ * @static
  * @param {string} string
  * @returns {Uint8Array}
+ * @throws {ValidationError}
  */
-base32.decode = function(string) {
+function decode(string) {
   validate(typeof string === 'string', 'Invalid base32-encoded string: ' + string + '.');
   var data = new Uint8Array(string.length);
   for (var i = 0; i < string.length; ++i) {
@@ -66,4 +69,9 @@ base32.decode = function(string) {
     data[i] = CHARSET_INVERSE_INDEX[value];
   }
   return data;
+}
+
+module.exports = {
+  encode: encode,
+  decode: decode,
 };
