@@ -1,5 +1,4 @@
-
-// Copyright (c) 2017 Emilio Almansi
+// Copyright (c) 2017-2018 Emilio Almansi
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,32 +19,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import { validate } from './validation';
+'use strict';
+
+var validate = require('./validation').validate;
 
 /**
- * Converts an array of integers made up of `from` bits into an
- * array of integers made up of `to` bits. The output array is
+ * Converts an array of integers made up of 'from' bits into an
+ * array of integers made up of 'to' bits. The output array is
  * zero-padded if necessary, unless strict mode is true.
  * Throws a {@link ValidationError} if input is invalid.
  * Original by Pieter Wuille: https://github.com/sipa/bech32.
  *
- * @param {Uint8Array} data Array of integers made up of `from` bits.
+ * @param {Uint8Array} data Array of integers made up of 'from' bits.
  * @param {number} from Length in bits of elements in the input array.
  * @param {number} to Length in bits of elements in the output array.
- * @param {bool} strict Require the conversion to be completed without padding.
+ * @param {bool} strictMode Require the conversion to be completed without padding.
  * @returns {Uint8Array}
  */
-export default function(data, from, to, strict = false) {
-  const length = strict
+module.exports = function(data, from, to, strictMode) {
+  var length = strictMode
     ? Math.floor(data.length * from / to)
     : Math.ceil(data.length * from / to);
-  const mask = (1 << to) - 1;
-  const result = new Uint8Array(length);
-  let index = 0;
-  let accumulator = 0;
-  let bits = 0;
-  for (const value of data) {
-    validate(0 <= value && (value >> from) === 0, `Invalid value: ${value}.`);
+  var mask = (1 << to) - 1;
+  var result = new Uint8Array(length);
+  var index = 0;
+  var accumulator = 0;
+  var bits = 0;
+  for (var i = 0; i < data.length; ++i) {
+    var value = data[i];
+    validate(0 <= value && (value >> from) === 0, 'Invalid value: ' + value + '.');
     accumulator = (accumulator << from) | value;
     bits += from;
     while (bits >= to) {
@@ -54,7 +56,7 @@ export default function(data, from, to, strict = false) {
       ++index;
     }
   }
-  if (!strict) {
+  if (!strictMode) {
     if (bits > 0) {
       result[index] = (accumulator << (to - bits)) & mask;
       ++index;
@@ -62,8 +64,8 @@ export default function(data, from, to, strict = false) {
   } else {
     validate(
       bits < from && ((accumulator << (to - bits)) & mask) === 0,
-      `Input cannot be converted to ${to} bits without padding, but strict mode was used.`
+      'Input cannot be converted to ' + to + ' bits without padding, but strict mode was used.'
     );
   }
   return result;
-}
+};

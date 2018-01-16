@@ -1,19 +1,18 @@
-
-/***
+/**
  * @license
  * https://github.com/bitcoincashjs/cashaddr
- * Copyright (c) 2017 Emilio Almansi
+ * Copyright (c) 2017-2018 Emilio Almansi
  * Distributed under the MIT software license, see the accompanying
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-import { validate } from './validation';
-import * as base32 from './base32';
-import * as validation from './validation';
-import bigInt from 'big-integer';
-import convertBits from './convertBits';
+'use strict';
 
-const VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+var base32 = require('./base32');
+var bigInt = require('big-integer');
+var convertBits = require('./convertBits');
+var validation = require('./validation');
+var validate = validation.validate;
 
 /**
  * Encoding and decoding of the new Cash Address format for Bitcoin Cash. <br />
@@ -21,6 +20,60 @@ const VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
  * {@link https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md}
  * @module cashaddr
  */
+module.exports = {
+  encode: encode,
+  decode: decode,
+  ValidationError: ValidationError,
+};
+
+/**
+ * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
+ * 
+ * @static
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
+ * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
+ * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
+ * @returns {string}
+ * @throws {ValidationError}
+ */
+function encode(prefix, type, hash) {
+  validate(typeof prefix === 'string' && isValidPrefix(prefix), 'Invalid prefix: ' + prefix + '.');
+  validate(typeof type === 'string', 'Invalid type: ' + type + '.');
+  validate(hash instanceof Uint8Array, 'Invalid hash: ' + hash + '.');
+  var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
+  var versionByte = getTypeBits(type) + getHashSizeBits(hash);
+  var payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
+  var checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
+  var payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
+  return prefix + ':' + base32.encode(payload);
+}
+
+/**
+ * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
+ * 
+ * @static
+ * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
+ * @returns {object}
+ * @throws {ValidationError}
+ */
+function decode(address) {
+  validate(typeof address === 'string' && hasSingleCase(address), 'Invalid address: ' + address + '.');
+  var pieces = address.toLowerCase().split(':');
+  validate(pieces.length === 2, 'Missing prefix: ' + address + '.');
+  var prefix = pieces[0];
+  var payload = base32.decode(pieces[1]);
+  validate(validChecksum(prefix, payload), 'Invalid checksum: ' + address + '.');
+  var payloadData = fromUint5Array(payload.slice(0, -8));
+  var versionByte = payloadData[0];
+  var hash = payloadData.slice(1);
+  validate(getHashSize(versionByte) === hash.length * 8, 'Invalid hash size: ' + address + '.');
+  var type = getType(versionByte);
+  return {
+    prefix: prefix,
+    type: type,
+    hash: hash,
+  };
+}
 
 /**
  * Error thrown when encoding or decoding fail due to invalid input.
@@ -28,50 +81,14 @@ const VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
  * @constructor ValidationError
  * @param {string} message Error description.
  */
-export const ValidationError = validation.ValidationError;
+var ValidationError = validation.ValidationError;
 
 /**
- * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
- * Throws a {@link ValidationError} if input is invalid.
- * 
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
- * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
- * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
- * @returns {string}
- */
-export function encode(prefix, type, hash) {
-  validate(typeof prefix === 'string' && isValidPrefix(prefix), `Invalid prefix: ${prefix}.`);
-  validate(typeof type === 'string', `Invalid type: ${type}.`);
-  validate(hash instanceof Uint8Array, `Invalid hash: ${hash}.`);
-  const prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
-  const versionByte = getTypeBits(type) + getHashSizeBits(hash);
-  const payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
-  const checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
-  const payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
-  return `${prefix}:${base32.encode(payload)}`;
-}
-
-/**
- * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
- * Throws a {@link ValidationError} if input is invalid.
+ * Valid address prefixes.
  *
- * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
- * @returns {object}
+ * @private
  */
-export function decode(address) {
-  validate(typeof address === 'string' && hasSingleCase(address), `Invalid address: ${address}.`);
-  const pieces = address.toLowerCase().split(':');
-  validate(pieces.length === 2, `Missing prefix: ${address}.`);
-  const prefix = pieces[0];
-  const payload = base32.decode(pieces[1]);
-  validate(validChecksum(prefix, payload), `Invalid checksum: ${address}.`);
-  const payloadData = fromUint5Array(payload.slice(0, -8));
-  const versionByte = payloadData[0];
-  const hash = payloadData.slice(1);
-  validate(getHashSize(versionByte) === hash.length * 8, `Invalid hash size: ${address}.`);
-  const type = getType(versionByte);
-  return { prefix, type, hash };
-}
+var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
@@ -82,7 +99,7 @@ export function decode(address) {
  * @returns {boolean}
  */
 function isValidPrefix(prefix) {
-  return hasSingleCase(prefix) && VALID_PREFIXES.includes(prefix.toLowerCase());
+  return hasSingleCase(prefix) && VALID_PREFIXES.indexOf(prefix.toLowerCase()) !== -1;
 }
 
 /**
@@ -94,8 +111,8 @@ function isValidPrefix(prefix) {
  * @returns {Uint8Array}
  */
 function prefixToUint5Array(prefix) {
-  const result = new Uint8Array(prefix.length);
-  for (let i = 0; i < prefix.length; ++i) {
+  var result = new Uint8Array(prefix.length);
+  for (var i = 0; i < prefix.length; ++i) {
     result[i] = prefix[i].charCodeAt(0) & 31;
   }
   return result;
@@ -110,8 +127,8 @@ function prefixToUint5Array(prefix) {
  * @returns {Uint8Array}
  */
 function checksumToUint5Array(checksum) {
-  const result = new Uint8Array(8);
-  for (let i = 0; i < 8; ++i) {
+  var result = new Uint8Array(8);
+  for (var i = 0; i < 8; ++i) {
     result[7 - i] = checksum.and(31).toJSNumber();
     checksum = checksum.shiftRight(5);
   }
@@ -121,11 +138,11 @@ function checksumToUint5Array(checksum) {
 /**
  * Returns the bit representation of the given type within the version
  * byte.
- * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
  * @param {string} type Address type. Either 'P2PKH' or 'P2SH'.
  * @returns {number}
+ * @throws {ValidationError}
  */
 function getTypeBits(type) {
   switch (type) {
@@ -134,18 +151,18 @@ function getTypeBits(type) {
   case 'P2SH':
     return 8;
   default:
-    throw new ValidationError(`Invalid type: ${type}.`);
+    throw new ValidationError('Invalid type: ' + type + '.');
   }
 }
 
 /**
  * Retrieves the address type from its bit representation within the
  * version byte.
- * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
  * @param {number} versionByte
  * @returns {string}
+ * @throws {ValidationError}
  */
 function getType(versionByte) {
   switch (versionByte & 120) {
@@ -154,18 +171,18 @@ function getType(versionByte) {
   case 8:
     return 'P2SH';
   default:
-    throw new ValidationError(`Invalid address type in version byte: ${versionByte}.`);
+    throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
   }
 }
 
 /**
  * Returns the bit representation of the length in bits of the given
  * hash within the version byte.
- * Throws a {@link ValidationError} if input is invalid.
  *
  * @private
  * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
  * @returns {number}
+ * @throws {ValidationError}
  */
 function getHashSizeBits(hash) {
   switch (hash.length * 8) {
@@ -186,7 +203,7 @@ function getHashSizeBits(hash) {
   case 512:
     return 7;
   default:
-    throw new ValidationError(`Invalid hash size: ${hash.length}.`);
+    throw new ValidationError('Invalid hash size: ' + hash.length + '.');
   }
 }
 
@@ -239,6 +256,7 @@ function toUint5Array(data) {
  * @private
  * @param {Uint8Array} data
  * @returns {Uint8Array}
+ * @throws {ValidationError}
  */
 function fromUint5Array(data) {
   return convertBits(data, 5, 8, true);
@@ -251,9 +269,10 @@ function fromUint5Array(data) {
  * @param {Uint8Array} a 
  * @param {Uint8Array} b 
  * @returns {Uint8Array}
+ * @throws {ValidationError}
  */
 function concat(a, b) {
-  const ab = new Uint8Array(a.length + b.length);
+  var ab = new Uint8Array(a.length + b.length);
   ab.set(a);
   ab.set(b, a.length);
   return ab;
@@ -268,14 +287,15 @@ function concat(a, b) {
  * @returns {BigInteger}
  */
 function polymod(data) {
-  const GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
-  let checksum = bigInt(1);
-  for (const value of data) {
-    const topBits = checksum.shiftRight(35);
+  var GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
+  var checksum = bigInt(1);
+  for (var i = 0; i < data.length; ++i) {
+    var value = data[i];
+    var topBits = checksum.shiftRight(35);
     checksum = checksum.and(0x07ffffffff).shiftLeft(5).xor(value);
-    for (let i = 0; i < GENERATOR.length; ++i) {
-      if (topBits.shiftRight(i).and(1).equals(1)) {
-        checksum = checksum.xor(GENERATOR[i]);
+    for (var j = 0; j < GENERATOR.length; ++j) {
+      if (topBits.shiftRight(j).and(1).equals(1)) {
+        checksum = checksum.xor(GENERATOR[j]);
       }
     }
   }
@@ -292,8 +312,8 @@ function polymod(data) {
  * @returns {boolean}
  */
 function validChecksum(prefix, payload) {
-  const prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
-  const checksumData = concat(prefixData, payload);
+  var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
+  var checksumData = concat(prefixData, payload);
   return polymod(checksumData).equals(0);
 }
 
@@ -306,14 +326,5 @@ function validChecksum(prefix, payload) {
  * @returns {boolean}
  */
 function hasSingleCase(string) {
-  let hasLowercase = false;
-  let hasUppercase = false;
-  for (const letter of string) {
-    hasLowercase = hasLowercase || letter !== letter.toUpperCase();
-    hasUppercase = hasUppercase || letter !== letter.toLowerCase();
-    if (hasLowercase && hasUppercase) {
-      return false;
-    }
-  }
-  return true;
+  return string === string.toLowerCase() || string === string.toUpperCase();
 }

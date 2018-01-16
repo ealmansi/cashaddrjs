@@ -2,7 +2,6 @@
     "env": {
         "browser": true,
         "commonjs": true,
-        "es6": true,
         "node": true
     },
     "extends": "eslint:recommended",
@@ -25,15 +24,9 @@
         "semi": [
             "error",
             "always"
-        ],
-        "no-var": [
-            "error"
-        ],
-        "prefer-const": [
-            "error"
-        ],
-        "prefer-arrow-callback": [
-            "error"
         ]
+    },
+    "globals": {
+        "Uint8Array": false
     }
 }

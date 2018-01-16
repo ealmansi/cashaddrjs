@@ -1,22 +1,31 @@
-
-/***
+/**
+ * @license
  * https://github.com/bitcoincashjs/cashaddr
- * Copyright (c) 2017 Emilio Almansi
+ * Copyright (c) 2017-2018 Emilio Almansi
  * Distributed under the MIT software license, see the accompanying
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
 
-import { validate } from './validation';
+'use strict';
+
+var validate = require('./validation').validate;
+
+/**
+ * Base32 encoding and decoding.
+ *
+ * @module base32
+ */
+var base32 = module.exports;
 
 /***
  * Charset containing the 32 symbols used in the base32 encoding.
  */
-const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+var CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 
 /***
  * Inverted index mapping each symbol into its index within the charset.
  */
-const CHARSET_INVERSE_INDEX = {
+var CHARSET_INVERSE_INDEX = {
   'q': 0, 'p': 1, 'z': 2, 'r': 3, 'y': 4, '9': 5, 'x': 6, '8': 7,
   'g': 8, 'f': 9, '2': 10, 't': 11, 'v': 12, 'd': 13, 'w': 14, '0': 15,
   's': 16, '3': 17, 'j': 18, 'n': 19, '5': 20, '4': 21, 'k': 22, 'h': 23,
@@ -30,30 +39,31 @@ const CHARSET_INVERSE_INDEX = {
  * @param {Uint8Array} data Array of integers between 0 and 31 inclusive.
  * @returns {string}
  */
-export function encode(data) {
-  validate(data instanceof Uint8Array, `Invalid data: ${data}.`);
-  let base32 = '';
-  for (const value of data) {
-    validate(0 <= value && value < 32, `Invalid value: ${value}.`);
+base32.encode = function(data) {
+  validate(data instanceof Uint8Array, 'Invalid data: ' + data + '.');
+  var base32 = '';
+  for (var i = 0; i < data.length; ++i) {
+    var value = data[i];
+    validate(0 <= value && value < 32, 'Invalid value: ' + value + '.');
     base32 += CHARSET[value];
   }
   return base32;
-}
+};
 
 /***
  * Decodes the given base32-encoded string into an array of 5-bit integers.
  * Throws a {@link ValidationError} if input is invalid.
  *
- * @param {string} base32
+ * @param {string} string
  * @returns {Uint8Array}
  */
-export function decode(base32) {
-  validate(typeof base32 === 'string', `Invalid base32-encoded string: ${base32}.`);
-  const data = new Uint8Array(base32.length);
-  for (let i = 0; i < base32.length; ++i) {
-    const value = base32[i];
-    validate(value in CHARSET_INVERSE_INDEX, `Invalid value: ${value}.`);
+base32.decode = function(string) {
+  validate(typeof string === 'string', 'Invalid base32-encoded string: ' + string + '.');
+  var data = new Uint8Array(string.length);
+  for (var i = 0; i < string.length; ++i) {
+    var value = string[i];
+    validate(value in CHARSET_INVERSE_INDEX, 'Invalid value: ' + value + '.');
     data[i] = CHARSET_INVERSE_INDEX[value];
   }
   return data;
-}
+};

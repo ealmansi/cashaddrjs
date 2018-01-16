@@ -2,14 +2,14 @@
   "name": "cashaddrjs",
   "version": "0.2.5",
   "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
-  "main": "lib/cashaddr.js",
+  "main": "src/cashaddr.js",
   "files": [
-    "lib/",
+    "src/",
     "dist/"
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "npm run build && npx nyc --reporter=html --reporter=text npx mocha --require babel-core/register --timeout 15000",
+    "test": "npx nyc --reporter=html --reporter=text npx mocha --require babel-core/register --timeout 15000",
     "coveralls": "npx nyc report --reporter=text-lcov | npx coveralls",
     "docs": "node scripts/docs.js",
     "preversion": "npm test",
@@ -55,8 +55,7 @@
     "nyc": "^11.4.1",
     "random-js": "^1.0.8",
     "shelljs": "^0.7.8",
-    "uglify-es": "^3.2.2",
-    "uglify-js": "^3.2.2",
+    "uglify-js": "^3.3.7",
     "watchify": "^3.9.0"
   },
   "dependencies": {

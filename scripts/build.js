@@ -8,9 +8,14 @@ const version = require('../package.json').version;
 const shell = require('shelljs');
 shell.config.fatal = true;
 
-shell.exec('mkdir -p lib dist')
-shell.exec('npx babel src --out-dir lib')
-shell.exec('npx browserify lib/cashaddr.js --s cashaddr', { silent:true })
-    .exec('npx uglifyjs -c --comments', { silent:true })
-    .to(`dist/cashaddrjs-${version}.min.js`);
-shell.echo(`Generated file: dist/cashaddrjs-${version}.min.js.`)
+shell.exec('mkdir -p dist');
+
+shell.exec('npx browserify src/cashaddr.js --s cashaddr', { silent:true })
+  .to(`dist/cashaddrjs-${version}.js`);
+shell.echo(`Generated file: dist/cashaddrjs-${version}.js.`);
+
+shell.exec(`cp LICENSE.js dist/cashaddrjs-${version}.min.js`);
+shell.exec(`cat dist/cashaddrjs-${version}.js`, { silent:true })
+  .exec('npx uglifyjs -c', { silent:true })
+  .toEnd(`dist/cashaddrjs-${version}.min.js`);
+shell.echo(`Generated file: dist/cashaddrjs-${version}.min.js.`);
