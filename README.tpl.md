@@ -8,7 +8,7 @@ JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
 
 Compliant with the original CashAddr [specification](https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
 
-You can try out a general purpose Bitcoin Cash address translator using CashAddr.js [here](https://bitcoincashjs.github.io/address/).
+*Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for a general purpose Bitcoin Cash address translation library, check out the easy-to-use and well-tested [BchAddr.js](https://github.com/bitcoincashjs/bchaddrjs).
 
 ## Installation
 
@@ -41,6 +41,8 @@ console.log(type); // 'P2PKH'
 console.log(hash); // Uint8Array [ 118, 160, ..., 115 ]
 console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
 ```
+
+*Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for an easy-to-use and well-tested library to translate between different formats, check out [BchAddr.js](https://github.com/bitcoincashjs/bchaddrjs).
 
 ### Browser
 
