@@ -9,7 +9,7 @@
 'use strict';
 
 var base32 = require('./base32');
-var bigInt = require('big-integer');
+var bigInt = require('./bigInt');
 var convertBits = require('./convertBits');
 var validation = require('./validation');
 var validate = validation.validate;
@@ -23,7 +23,7 @@ var validate = validation.validate;
 
 /**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
- * 
+ *
  * @static
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
@@ -45,7 +45,7 @@ function encode(prefix, type, hash) {
 
 /**
  * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
- * 
+ *
  * @static
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  * @returns {object}
@@ -90,7 +90,7 @@ var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
  * and is one of 'bitcoincash', 'bchtest', or 'bchreg'.
  *
  * @private
- * @param {string} prefix 
+ * @param {string} prefix
  * @returns {boolean}
  */
 function isValidPrefix(prefix) {
@@ -102,7 +102,7 @@ function isValidPrefix(prefix) {
  * of the address' checksum.
  *
  * @private
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @returns {Uint8Array}
  */
 function prefixToUint5Array(prefix) {
@@ -118,14 +118,13 @@ function prefixToUint5Array(prefix) {
  * within the address' payload.
  *
  * @private
- * @param {BigInteger} checksum Computed checksum.
+ * @param {array} checksum Computed bigInt checksum.
  * @returns {Uint8Array}
  */
 function checksumToUint5Array(checksum) {
   var result = new Uint8Array(8);
   for (var i = 0; i < 8; ++i) {
-    result[7 - i] = checksum.and(31).toJSNumber();
-    checksum = checksum.shiftRight(5);
+    result[i] = bigInt.simplify(bigInt.and(bigInt.rShift(checksum, 5 * (7 - i)), [31]))[0];
   }
   return result;
 }
@@ -261,8 +260,8 @@ function fromUint5Array(data) {
  * Returns the concatenation a and b.
  *
  * @private
- * @param {Uint8Array} a 
- * @param {Uint8Array} b 
+ * @param {Uint8Array} a
+ * @param {Uint8Array} b
  * @returns {Uint8Array}
  * @throws {ValidationError}
  */
@@ -279,28 +278,41 @@ function concat(a, b) {
  *
  * @private
  * @param {Uint8Array} data Array of 5-bit integers over which the checksum is to be computed.
- * @returns {BigInteger}
+ * @returns {bigInt}
  */
 function polymod(data) {
-  var GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
-  var checksum = bigInt(1);
-  for (var i = 0; i < data.length; ++i) {
-    var value = data[i];
-    var topBits = checksum.shiftRight(35);
-    checksum = checksum.and(0x07ffffffff).shiftLeft(5).xor(value);
-    for (var j = 0; j < GENERATOR.length; ++j) {
-      if (topBits.shiftRight(j).and(1).equals(1)) {
-        checksum = checksum.xor(GENERATOR[j]);
-      }
+  var c = [0, 1];
+  var c0 = [0];
+  for (var i = 0; i < data.length; i++) {
+    c0 = bigInt.rShift(c, 35);
+    c = bigInt.xor(bigInt.lShiftByFive(bigInt.and(c, [7, -1])), [data[i]]);
+    if (c0.length === 0) {
+      continue;
+    }
+    if (c0[0] & 1) {
+      c = bigInt.xor(c, [0x98, 0xf2bc8e61]);
+    }
+    if (c0[0] & 2) {
+      c = bigInt.xor(c, [0x79, 0xb76d99e2]);
+    }
+    if (c0[0] & 4) {
+      c = bigInt.xor(c, [0xf3, 0x3e5fb3c4]);
+    }
+    if (c0[0] & 8) {
+      c = bigInt.xor(c, [0xae, 0x2eabe2a8]);
+    }
+    if (c0[0] & 16) {
+      c = bigInt.xor(c, [0x1e, 0x4f43e470]);
     }
   }
-  return checksum.xor(1);
+  return bigInt.xor(c, [1]);
 }
+
 
 /**
  * Verify that the payload has not been corrupted by checking that the
  * checksum is valid.
- * 
+ *
  * @private
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {Uint8Array} payload Array of 5-bit integers containing the address' payload.
@@ -309,7 +321,7 @@ function polymod(data) {
 function validChecksum(prefix, payload) {
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   var checksumData = concat(prefixData, payload);
-  return polymod(checksumData).equals(0);
+  return bigInt.isZero(polymod(checksumData));
 }
 
 /**
