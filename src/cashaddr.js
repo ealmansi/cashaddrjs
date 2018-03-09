@@ -35,7 +35,7 @@ function encode(prefix, type, hash) {
   validate(typeof prefix === 'string' && isValidPrefix(prefix), 'Invalid prefix: ' + prefix + '.');
   validate(typeof type === 'string', 'Invalid type: ' + type + '.');
   validate(hash instanceof Uint8Array, 'Invalid hash: ' + hash + '.');
-  var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
+  var prefixData = concat(prefixToUint8Array(prefix), new Uint8Array(1));
   var versionByte = getTypeBits(type) + getHashSizeBits(hash);
   var payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
   var checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
@@ -105,7 +105,7 @@ function isValidPrefix(prefix) {
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
  * @returns {Uint8Array}
  */
-function prefixToUint5Array(prefix) {
+function prefixToUint8Array(prefix) {
   var result = new Uint8Array(prefix.length);
   for (var i = 0; i < prefix.length; ++i) {
     result[i] = prefix[i].charCodeAt(0) & 31;
@@ -307,7 +307,7 @@ function polymod(data) {
  * @returns {boolean}
  */
 function validChecksum(prefix, payload) {
-  var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
+  var prefixData = concat(prefixToUint8Array(prefix), new Uint8Array(1));
   var checksumData = concat(prefixData, payload);
   return polymod(checksumData).equals(0);
 }
