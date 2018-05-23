@@ -37,7 +37,7 @@ function encode(prefix, type, hash) {
   validate(hash instanceof Uint8Array, 'Invalid hash: ' + hash + '.');
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   var versionByte = getTypeBits(type) + getHashSizeBits(hash);
-  var payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
+  var payloadData = toUint5Array(concat(new Uint8Array([versionByte]), hash));
   var checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
   var payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
   return prefix + ':' + base32.encode(payload);
