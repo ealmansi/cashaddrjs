@@ -19,12 +19,6 @@ Compliant with the original CashAddr [specification](https://github.com/Bitcoin-
 $ npm install --save cashaddrjs-fork
 ```
 
-### Using Bower
-
-```bsh
-$ bower install --save cashaddrjs-fork
-```
-
 ## Usage
 
 ### In Node.js
@@ -40,15 +34,3 @@ console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z
 ```
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for an easy-to-use and well-tested library to translate between different formats, check out [BchAddr.js](https://github.com/jbdtky/bchaddrjs).
-
-## Documentation
-
-### Generate and Browse Locally
-
-```bsh
-$ npm run docs
-```
-
-### Online
-
-Browse automatically generated jsdocs [online](https://cdn.rawgit.com/jbdtky/cashaddrjs/master/docs/index.html).
