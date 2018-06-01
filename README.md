@@ -25,10 +25,6 @@ $ npm install --save cashaddrjs-fork
 $ bower install --save cashaddrjs-fork
 ```
 
-### Manually
-
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.2.8.min.js](https://cdn.rawgit.com/jbdtky/cashaddrjs/master/dist/cashaddrjs-0.2.8.min.js).
-
 ## Usage
 
 ### In Node.js
@@ -44,22 +40,6 @@ console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z
 ```
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for an easy-to-use and well-tested library to translate between different formats, check out [BchAddr.js](https://github.com/jbdtky/bchaddrjs).
-
-### Browser
-
-#### Script Tag
-
-You may include a script tag in your HTML and the `cashaddr` module will be defined globally on subsequent scripts.
-
-```html
-<html>
-  <head>
-    ...
-    <script src="https://cdn.rawgit.com/jbdtky/cashaddrjs/master/dist/cashaddrjs-0.2.8.min.js"></script>
-  </head>
-  ...
-</html>
-```
 
 ## Documentation
 
