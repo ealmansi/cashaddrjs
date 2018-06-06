@@ -58,9 +58,9 @@ function decode(address) {
   var prefix = pieces[0];
   var payload = base32.decode(pieces[1]);
   validate(validChecksum(prefix, payload), 'Invalid checksum: ' + address + '.');
-  var payloadData = fromUint5Array(payload.slice(0, -8));
+  var payloadData = fromUint5Array(payload.subarray(0, -8));
   var versionByte = payloadData[0];
-  var hash = payloadData.slice(1);
+  var hash = payloadData.subarray(1);
   validate(getHashSize(versionByte) === hash.length * 8, 'Invalid hash size: ' + address + '.');
   var type = getType(versionByte);
   return {
