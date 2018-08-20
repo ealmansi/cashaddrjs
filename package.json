@@ -49,6 +49,7 @@
     "eslint": "^4.19.1",
     "http-server": "^0.10.0",
     "jsdoc": "^3.5.5",
+    "lodash": "^4.17.10",
     "mocha": "^4.0.1",
     "mocha-eslint": "^4.1.0",
     "mustache": "^2.3.2",
