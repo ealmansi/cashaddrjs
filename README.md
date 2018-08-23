@@ -54,7 +54,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 <html>
   <head>
     ...
-    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.9.min.js"></script>
+    <script src="https://cdn.rawgit.com/bitcoincashjs/cashaddrjs/master/dist/cashaddrjs-0.2.9.min.js" integrity="sha256-f0eX//RYLOSAutWPH8sPlDDqjoSKxFjMboy8Pwq+MMk=" crossorigin="anonymous"></script>
   </head>
   ...
 </html>
