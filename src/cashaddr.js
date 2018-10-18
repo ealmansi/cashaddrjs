@@ -9,7 +9,6 @@
 'use strict';
 
 var base32 = require('./base32');
-var bigInt = require('big-integer');
 var convertBits = require('./convertBits');
 var validation = require('./validation');
 var validate = validation.validate;
@@ -118,14 +117,16 @@ function prefixToUint5Array(prefix) {
  * within the address' payload.
  *
  * @private
- * @param {BigInteger} checksum Computed checksum.
+ * @param {Number} checksum Computed checksum.
  * @returns {Uint8Array}
  */
 function checksumToUint5Array(checksum) {
+  var items = [checksum % 0x0100000000, (checksum / 0x0100000000) | 0];
   var result = new Uint8Array(8);
   for (var i = 0; i < 8; ++i) {
-    result[7 - i] = checksum.and(31).toJSNumber();
-    checksum = checksum.shiftRight(5);
+    result[7 - i] = items[0] & 0x1f;
+    items[0] = (items[0] >>> 5) | ((items[1] & 0x1f) << 27);
+    items[1] = items[1] >>> 5;
   }
   return result;
 }
@@ -279,22 +280,38 @@ function concat(a, b) {
  *
  * @private
  * @param {Uint8Array} data Array of 5-bit integers over which the checksum is to be computed.
- * @returns {BigInteger}
+ * @returns {Number}
  */
 function polymod(data) {
-  var GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
-  var checksum = bigInt(1);
+  var GENERATOR = [
+    [4072443489, 152],
+    [3077413346, 121],
+    [1046459332, 243],
+    [783016616, 174],
+    [1329849456, 30]
+  ];
+  var items = [1, 0];
   for (var i = 0; i < data.length; ++i) {
     var value = data[i];
-    var topBits = checksum.shiftRight(35);
-    checksum = checksum.and(0x07ffffffff).shiftLeft(5).xor(value);
+
+    // >> 35
+    var topBits = items[1] >>> 3;
+    // & 0x07ffffffff
+    items[1] = items[1] & 0x07;
+    // << 5
+    items[1] = (items[1] << 5) | (items[0] >>> 27);
+    items[0] = items[0] << 5;
+    // ^ value
+    items[0] = items[0] ^ value;
+
     for (var j = 0; j < GENERATOR.length; ++j) {
-      if (topBits.shiftRight(j).and(1).equals(1)) {
-        checksum = checksum.xor(GENERATOR[j]);
+      if (((topBits >>> j) & 1) === 1) {
+        items[0] = items[0] ^ GENERATOR[j][0];
+        items[1] = items[1] ^ GENERATOR[j][1];
       }
     }
   }
-  return checksum.xor(1);
+  return ((items[0] ^ 1) >>> 0) + (items[1] >>> 0) * 0x0100000000;
 }
 
 /**
@@ -309,7 +326,7 @@ function polymod(data) {
 function validChecksum(prefix, payload) {
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   var checksumData = concat(prefixData, payload);
-  return polymod(checksumData).equals(0);
+  return polymod(checksumData) === 0;
 }
 
 /**

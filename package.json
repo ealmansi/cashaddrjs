@@ -58,8 +58,5 @@
     "shelljs": "^0.7.8",
     "uglify-js": "^3.4.7",
     "watchify": "^3.11.0"
-  },
-  "dependencies": {
-    "big-integer": "^1.6.34"
   }
 }
