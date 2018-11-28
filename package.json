@@ -44,22 +44,23 @@
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
     "browserify": "^14.5.0",
-    "chai": "^4.1.2",
+    "chai": "4.2.0",
     "coveralls": "^3.0.2",
-    "eslint": "^4.19.1",
-    "http-server": "^0.10.0",
+    "eslint": "5.9.0",
+    "http-server": "0.11.1",
     "jsdoc": "^3.5.5",
-    "lodash": "^4.17.10",
-    "mocha": "^4.0.1",
+    "lodash": "4.17.11",
+    "mocha": "5.2.0",
     "mocha-eslint": "^4.1.0",
-    "mustache": "^2.3.2",
-    "nyc": "^11.9.0",
+    "mustache": "3.0.1",
+    "npm-check-updates": "2.15.0",
+    "nyc": "13.1.0",
     "random-js": "^1.0.8",
-    "shelljs": "^0.7.8",
-    "uglify-js": "^3.4.7",
+    "shelljs": "0.8.3",
+    "uglify-js": "3.4.9",
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "big-integer": "^1.6.34"
+    "big-integer": "1.6.36"
   }
 }
