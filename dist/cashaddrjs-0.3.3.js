@@ -1440,7 +1440,7 @@ function encode(prefix, type, hash) {
   validate(hash instanceof Uint8Array, 'Invalid hash: ' + hash + '.');
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   var versionByte = getTypeBits(type) + getHashSizeBits(hash);
-  var payloadData = toUint5Array(concat(Uint8Array.of(versionByte), hash));
+  var payloadData = toUint5Array(concat(new Uint8Array([versionByte]), hash));
   var checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
   var payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
   return prefix + ':' + base32.encode(payload);
@@ -1461,9 +1461,9 @@ function decode(address) {
   var prefix = pieces[0];
   var payload = base32.decode(pieces[1]);
   validate(validChecksum(prefix, payload), 'Invalid checksum: ' + address + '.');
-  var payloadData = fromUint5Array(payload.slice(0, -8));
+  var payloadData = fromUint5Array(payload.subarray(0, -8));
   var versionByte = payloadData[0];
-  var hash = payloadData.slice(1);
+  var hash = payloadData.subarray(1);
   validate(getHashSize(versionByte) === hash.length * 8, 'Invalid hash size: ' + address + '.');
   var type = getType(versionByte);
   return {
