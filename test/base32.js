@@ -30,7 +30,7 @@ describe('base32', () => {
         undefined,
         'some string',
         1234.567,
-        Uint8Array.of(100, 2, 3, 4),
+        new Uint8Array([100, 2, 3, 4]),
       ];
       for (const input of INVALID_INPUTS) {
         assert.throws(() => base32.encode(input), ValidationError);

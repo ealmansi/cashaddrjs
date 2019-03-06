@@ -20,9 +20,9 @@ describe('cashaddr', () => {
   const VALID_SIZES = [20, 24, 28, 32, 40, 48, 56, 64];
 
   const TEST_HASHES = [
-    Uint8Array.of(118, 160, 64,  83, 189, 160, 168, 139, 218, 81, 119, 184, 106, 21, 195, 178, 159, 85,  152, 115),
-    Uint8Array.of(203, 72, 18, 50, 41,  156, 213, 116, 49,  81, 172, 75, 45, 99, 174, 25,  142, 123, 176, 169),
-    Uint8Array.of(1,   31, 40,  228, 115, 201, 95, 64,  19,  215, 213, 62, 197, 251, 195, 180, 45, 248, 237, 16),
+    new Uint8Array([118, 160, 64,  83, 189, 160, 168, 139, 218, 81, 119, 184, 106, 21, 195, 178, 159, 85,  152, 115]),
+    new Uint8Array([203, 72, 18, 50, 41,  156, 213, 116, 49,  81, 172, 75, 45, 99, 174, 25,  142, 123, 176, 169]),
+    new Uint8Array([1,   31, 40,  228, 115, 201, 95, 64,  19,  215, 213, 62, 197, 251, 195, 180, 45, 248, 237, 16]),
   ];
   
   const EXPECTED_P2PKH_OUTPUTS = [
@@ -62,19 +62,19 @@ describe('cashaddr', () => {
   describe('#encode()', () => {
     it('should fail on an invalid prefix', () => {
       assert.throws(() => {
-        cashaddr.encode('some invalid prefix', ADDRESS_TYPES[0], Uint8Array.of());
+        cashaddr.encode('some invalid prefix', ADDRESS_TYPES[0], new Uint8Array([]));
       }, cashaddr.ValidationError);
     });
 
     it('should fail on a prefix with mixed letter case', () => {
       assert.throws(() => {
-        cashaddr.encode('BiTcOiNcAsH', ADDRESS_TYPES[0], Uint8Array.of());
+        cashaddr.encode('BiTcOiNcAsH', ADDRESS_TYPES[0], new Uint8Array([]));
       }, cashaddr.ValidationError);
     });
 
     it('should fail on an invalid type', () => {
       assert.throws(() => {
-        cashaddr.encode(NETWORKS[0], 'some invalid type', Uint8Array.of());
+        cashaddr.encode(NETWORKS[0], 'some invalid type', new Uint8Array([]));
       }, cashaddr.ValidationError);
     });
 
