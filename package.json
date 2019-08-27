@@ -49,7 +49,7 @@
     "coveralls": "3.0.4",
     "eslint": "6.2.2",
     "http-server": "0.11.1",
-    "jsdoc": "3.6.2",
+    "jsdoc": "^3.6.3",
     "lodash": "4.17.14",
     "mocha": "5.2.0",
     "mocha-eslint": "^4.1.0",
