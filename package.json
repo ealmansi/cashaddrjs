@@ -54,7 +54,7 @@
     "mocha": "5.2.0",
     "mocha-eslint": "^4.1.0",
     "mustache": "3.0.1",
-    "nyc": "^14.1.1",
+    "nyc": "^15.0.0",
     "random-js": "^1.0.8",
     "shelljs": "0.8.3",
     "uglify-js": "3.4.9",
