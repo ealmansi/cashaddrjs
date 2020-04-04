@@ -15,7 +15,7 @@
     "node",
     "browser"
   ],
-  "homepage": "https://github.com/bitcoincashjs/cashaddrjs",
+  "homepage": "https://github.com/ealmansi/cashaddrjs",
   "ignore": [
     "**/.*",
     "node_modules",
