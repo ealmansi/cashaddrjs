@@ -1324,8 +1324,8 @@ if (typeof define === "function" && define.amd) {
 },{}],2:[function(require,module,exports){
 /**
  * @license
- * https://github.com/bitcoincashjs/cashaddr
- * Copyright (c) 2017-2018 Emilio Almansi
+ * https://github.com/ealmansi/cashaddrjs
+ * Copyright (c) 2017-2020 Emilio Almansi
  * Distributed under the MIT software license, see the accompanying
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
@@ -1403,8 +1403,8 @@ module.exports = {
 },{"./validation":5}],3:[function(require,module,exports){
 /**
  * @license
- * https://github.com/bitcoincashjs/cashaddr
- * Copyright (c) 2017-2018 Emilio Almansi
+ * https://github.com/ealmansi/cashaddrjs
+ * Copyright (c) 2017-2020 Emilio Almansi
  * Distributed under the MIT software license, see the accompanying
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
@@ -1809,8 +1809,8 @@ module.exports = function(data, from, to, strictMode) {
 },{"./validation":5}],5:[function(require,module,exports){
 /**
  * @license
- * https://github.com/bitcoincashjs/cashaddr
- * Copyright (c) 2017-2018 Emilio Almansi
+ * https://github.com/ealmansi/cashaddrjs
+ * Copyright (c) 2017-2020 Emilio Almansi
  * Distributed under the MIT software license, see the accompanying
  * file LICENSE or http://www.opensource.org/licenses/mit-license.php.
  */
