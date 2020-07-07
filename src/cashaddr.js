@@ -9,7 +9,6 @@
 'use strict';
 
 var base32 = require('./base32');
-var bigInt = require('big-integer');
 var convertBits = require('./convertBits');
 var validation = require('./validation');
 var validate = validation.validate;
@@ -118,14 +117,14 @@ function prefixToUint5Array(prefix) {
  * within the address' payload.
  *
  * @private
- * @param {BigInteger} checksum Computed checksum.
+ * @param {number} checksum Computed checksum.
  * @returns {Uint8Array}
  */
 function checksumToUint5Array(checksum) {
   var result = new Uint8Array(8);
   for (var i = 0; i < 8; ++i) {
-    result[7 - i] = checksum.and(31).toJSNumber();
-    checksum = checksum.shiftRight(5);
+    result[7 - i] = Math.floor(checksum % 32);
+    checksum = Math.floor(checksum / 32);
   }
   return result;
 }
@@ -274,27 +273,81 @@ function concat(a, b) {
 }
 
 /**
+ * 2 to the power of 31
+ * @private
+ */
+var POW31 = 0x80000000;
+
+/**
+ * 2 to the power of 35
+ * @private
+ */
+var POW35 = 0x800000000;
+
+/**
+ * 2 to the power of 31 minus 1, used as a 31 bit mask
+ * @private
+ */
+var MSK31 = POW31 - 1;
+
+/**
+ * 2 to the power of 9 minus 1, used as a 9 bit mask
+ * @private
+ */
+var MSK9 = 0x1ff;
+
+/**
+ * Splits a 40 bit integer into the top 9 bits and lower 31 bits.
+ *
+ * @private
+ * @param {number} res 40-bit integer.
+ * @returns {Array.<number>}
+ */
+function split40Bits(res) {
+  return [
+    Math.floor(res / POW31) & MSK9, // top 9 bits
+    res & MSK31, // bottom 31 bits
+  ];
+}
+
+/**
+ * Computes a xor b for 40-bit integers
+ *
+ * @private
+ * @param {number} a 40-bit integer.
+ * @param {number} b 40-bit integer.
+ * @returns {number}
+ */
+function xor40bit(a, b) {
+  var aSplit = split40Bits(a);
+  var bSplit = split40Bits(b);
+  aSplit[0] ^= bSplit[0];
+  aSplit[1] ^= bSplit[1];
+  return aSplit[0] * POW31 + aSplit[1];
+}
+
+/**
  * Computes a checksum from the given input data as specified for the CashAddr
  * format: https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md.
  *
  * @private
  * @param {Uint8Array} data Array of 5-bit integers over which the checksum is to be computed.
- * @returns {BigInteger}
+ * @returns {number}
  */
 function polymod(data) {
   var GENERATOR = [0x98f2bc8e61, 0x79b76d99e2, 0xf33e5fb3c4, 0xae2eabe2a8, 0x1e4f43e470];
-  var checksum = bigInt(1);
+  var checksum = 1;
   for (var i = 0; i < data.length; ++i) {
     var value = data[i];
-    var topBits = checksum.shiftRight(35);
-    checksum = checksum.and(0x07ffffffff).shiftLeft(5).xor(value);
+    var topBits = Math.floor(checksum / POW35);
+    checksum = Math.floor(Math.floor(checksum % POW35) * 32) + value;
     for (var j = 0; j < GENERATOR.length; ++j) {
-      if (topBits.shiftRight(j).and(1).equals(1)) {
-        checksum = checksum.xor(GENERATOR[j]);
+      if (((topBits >> j) & 1) === 1) {
+        checksum = xor40bit(checksum, GENERATOR[j]);
       }
     }
   }
-  return checksum.xor(1);
+  return xor40bit(checksum, 1);
 }
 
 /**
@@ -309,7 +362,7 @@ function polymod(data) {
 function validChecksum(prefix, payload) {
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
   var checksumData = concat(prefixData, payload);
-  return polymod(checksumData).equals(0);
+  return polymod(checksumData) === 0;
 }
 
 /**
