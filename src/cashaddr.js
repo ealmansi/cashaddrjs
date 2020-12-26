@@ -17,7 +17,7 @@ var validate = validation.validate;
 /**
  * Encoding and decoding of the new Cash Address format for Bitcoin Cash. <br />
  * Compliant with the original cashaddr specification:
- * {@link https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md}
+ * {@link https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md}
  * @module cashaddr
  */
 
