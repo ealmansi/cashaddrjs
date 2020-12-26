@@ -15,9 +15,7 @@
     "test": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "docs": "jsdoc -d docs src/cashaddr.js",
-    "readme": "mustache package.json README.tpl.md > README.md",
-    "preversion": "yarn test && yarn clean && yarn build && yarn docs",
-    "postversion": "yarn readme && git add -A README.md dist docs && git push --tags && yarn publish . --tag $npm_package_version && git push"
+    "readme": "mustache package.json README.tpl.md > README.md"
   },
   "repository": {
     "type": "git",
