@@ -1,6 +1,6 @@
 {
   "name": "cashaddrjs",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
   "main": "src/cashaddr.js",
   "files": [
@@ -15,9 +15,9 @@
     "test": "nyc --reporter=html --reporter=text mocha",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "docs": "jsdoc -d docs src/cashaddr.js",
-    "readme": "mustache package.json README.tpl.md > README.md && git add -A README.md",
+    "readme": "mustache package.json README.tpl.md > README.md",
     "preversion": "yarn test && yarn clean && yarn build && yarn docs",
-    "postversion": "yarn readme && git push --tags && yarn publish . --tag $npm_package_version && git push"
+    "postversion": "yarn readme && git add -A README.md dist docs && git push --tags && yarn publish . --tag $npm_package_version && git push"
   },
   "repository": {
     "type": "git",
