@@ -70,4 +70,4 @@ $ npm run docs
 
 ### Online
 
-Browse automatically generated jsdocs [online](https://cdn.rawgit.com/ealmansi/cashaddrjs/master/docs/index.html).
+Browse automatically generated jsdocs [online](https://emilio.almansi.me/cashaddrjs/module-cashaddr.html).
