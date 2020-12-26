@@ -7,10 +7,10 @@
 
 /* global describe it */
 
-import { assert } from 'chai';
-import { ValidationError } from '../src/validation';
-import * as base32 from '../src/base32';
-import Random from 'random-js';
+const { assert } = require('chai');
+const { ValidationError } = require('../src/validation');
+const base32 = require('../src/base32');
+const Random = require('random-js');
 
 describe('base32', () => {
 

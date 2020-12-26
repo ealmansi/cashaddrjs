@@ -7,9 +7,9 @@
 
 /* global describe it */
 
-import { assert } from 'chai';
-import * as cashaddr from '../src/cashaddr';
-import Random from 'random-js';
+const { assert } = require('chai');
+const cashaddr = require('../src/cashaddr');
+const Random = require('random-js');
 
 describe('cashaddr', () => {
 

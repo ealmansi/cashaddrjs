@@ -7,10 +7,10 @@
 
 /* global describe it */
 
-import { assert } from 'chai';
-import { ValidationError } from '../src/validation';
-import convertBits from '../src/convertBits';
-import Random from 'random-js';
+const { assert } = require('chai');
+const { ValidationError } = require('../src/validation');
+const convertBits = require('../src/convertBits');
+const Random = require('random-js');
 
 describe('#convertBits()', () => {
 
