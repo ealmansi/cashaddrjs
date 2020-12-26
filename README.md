@@ -6,7 +6,7 @@
 
 JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
 
-Compliant with the original CashAddr [specification](https://github.com/Bitcoin-UAHF/spec/blob/master/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
+Compliant with the original CashAddr [specification](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for a general purpose Bitcoin Cash address translation library, check out the easy-to-use and well-tested [BchAddr.js](https://github.com/ealmansi/bchaddrjs).
 
@@ -26,7 +26,7 @@ $ bower install --save cashaddrjs
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.4.2.min.js](https://unpkg.com/cashaddrjs@0.4.2/dist/cashaddrjs-0.4.2.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.4.3.min.js](https://unpkg.com/cashaddrjs@0.4.3/dist/cashaddrjs-0.4.3.min.js).
 
 ## Usage
 
@@ -54,7 +54,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 <html>
   <head>
     ...
-    <script src="https://unpkg.com/cashaddrjs@0.4.2/dist/cashaddrjs-0.4.2.min.js"></script>
+    <script src="https://unpkg.com/cashaddrjs@0.4.3/dist/cashaddrjs-0.4.3.min.js"></script>
   </head>
   ...
 </html>
@@ -70,4 +70,4 @@ $ npm run docs
 
 ### Online
 
-Browse automatically generated jsdocs [online](https://cdn.rawgit.com/ealmansi/cashaddrjs/master/docs/index.html).
+Browse automatically generated jsdocs [online](https://emilio.almansi.me/cashaddrjs/module-cashaddr.html).
