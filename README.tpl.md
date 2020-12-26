@@ -26,7 +26,7 @@ $ bower install --save cashaddrjs
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-{{ version }}.min.js](https://cdn.rawgit.com/ealmansi/cashaddrjs/master/dist/cashaddrjs-{{ version }}.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-{{ version }}.min.js](https://unpkg.com/cashaddrjs@{{ version }}/dist/cashaddrjs-{{ version }}.min.js).
 
 ## Usage
 
@@ -54,7 +54,7 @@ You may include a script tag in your HTML and the `cashaddr` module will be defi
 <html>
   <head>
     ...
-    <script src="https://cdn.rawgit.com/ealmansi/cashaddrjs/master/dist/cashaddrjs-{{ version }}.min.js"></script>
+    <script src="https://unpkg.com/cashaddrjs@{{ version }}/dist/cashaddrjs-{{ version }}.min.js"></script>
   </head>
   ...
 </html>
