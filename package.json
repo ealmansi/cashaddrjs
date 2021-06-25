@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/ealmansi/cashaddrjs#readme",
   "devDependencies": {
-    "@babel/cli": "7.12.10",
+    "@babel/cli": "^7.12.1",
     "@babel/core": "7.12.10",
     "@babel/preset-env": "7.12.11",
     "babel-loader": "8.2.2",
@@ -45,7 +45,7 @@
     "coveralls": "3.0.9",
     "debug": "4.3.1",
     "eslint": "6.2.2",
-    "jsdoc": "3.6.3",
+    "jsdoc": "^3.6.7",
     "mocha": "8.2.1",
     "mustache": "3.0.1",
     "nyc": "15.0.0",

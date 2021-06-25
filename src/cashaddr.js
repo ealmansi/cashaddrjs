@@ -61,7 +61,7 @@ function decode(address) {
   var payloadData = fromUint5Array(payload.subarray(0, -8));
   var versionByte = payloadData[0];
   var hash = payloadData.subarray(1);
-  validate(getHashSize(versionByte) === hash.length * 8, 'Invalid hash size: ' + address + '.');
+  validate(getHashSize(versionByte, prefix) === hash.length * 8, 'Invalid hash size: ' + address + '.');
   var type = getType(versionByte);
   return {
     prefix: prefix,
@@ -83,7 +83,7 @@ var ValidationError = validation.ValidationError;
  *
  * @private
  */
-var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg', 'paycode'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
@@ -184,6 +184,7 @@ function getHashSizeBits(hash) {
   case 160:
     return 0;
   case 192:
+  case 568:
     return 1;
   case 224:
     return 2;
@@ -210,7 +211,10 @@ function getHashSizeBits(hash) {
  * @param {number} versionByte
  * @returns {number}
  */
-function getHashSize(versionByte) {
+function getHashSize(versionByte, prefix) {
+  if (prefix === 'paycode') {
+    return 568
+  }
   switch (versionByte & 7) {
   case 0:
     return 160;
