@@ -1,7 +1,7 @@
 {
-  "name": "cashaddrjs",
-  "version": "0.4.4",
-  "description": "Bitcoin Cash cashaddr address format support for Node.js and web browsers.",
+  "name": "ecashaddrjs",
+  "version": "1.0.0",
+  "description": "eCash cashaddr address format support for Node.js and web browsers.",
   "main": "src/cashaddr.js",
   "files": [
     "src/",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ealmansi/cashaddrjs.git"
+    "url": "git+https://github.com/bytesofman/ecashaddrjs.git"
   },
   "keywords": [
     "bitcoin",
@@ -33,7 +33,7 @@
   "author": "Emilio Almansi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ealmansi/cashaddrjs/issues"
+    "url": "https://github.com/bytesofman/ecashaddrjs/issues"
   },
   "homepage": "https://github.com/ealmansi/cashaddrjs#readme",
   "devDependencies": {

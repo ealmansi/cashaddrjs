@@ -83,7 +83,7 @@ var ValidationError = validation.ValidationError;
  *
  * @private
  */
-var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+var VALID_PREFIXES = ['ecash', 'bitcoincash', 'bchtest', 'bchreg'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
