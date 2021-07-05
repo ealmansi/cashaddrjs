@@ -23,7 +23,7 @@ var validate = validation.validate;
 
 /**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
- * 
+ *
  * @static
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
@@ -35,17 +35,22 @@ function encode(prefix, type, hash) {
   validate(typeof prefix === 'string' && isValidPrefix(prefix), 'Invalid prefix: ' + prefix + '.');
   validate(typeof type === 'string', 'Invalid type: ' + type + '.');
   validate(hash instanceof Uint8Array, 'Invalid hash: ' + hash + '.');
+  if (prefix === 'paycode') {
+    var payloadData = toUint5Array(hash)
+  } else {
+    var versionByte = getTypeBits(type) + getHashSizeBits(hash);
+    var payloadData = toUint5Array(concat(new Uint8Array([versionByte]), hash));
+  }
   var prefixData = concat(prefixToUint5Array(prefix), new Uint8Array(1));
-  var versionByte = getTypeBits(type) + getHashSizeBits(hash);
-  var payloadData = toUint5Array(concat(new Uint8Array([versionByte]), hash));
   var checksumData = concat(concat(prefixData, payloadData), new Uint8Array(8));
   var payload = concat(payloadData, checksumToUint5Array(polymod(checksumData)));
+
   return prefix + ':' + base32.encode(payload);
 }
 
 /**
  * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
- * 
+ *
  * @static
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  * @returns {object}
@@ -60,9 +65,16 @@ function decode(address) {
   validate(validChecksum(prefix, payload), 'Invalid checksum: ' + address + '.');
   var payloadData = fromUint5Array(payload.subarray(0, -8));
   var versionByte = payloadData[0];
-  var hash = payloadData.subarray(1);
-  validate(getHashSize(versionByte, prefix) === hash.length * 8, 'Invalid hash size: ' + address + '.');
-  var type = getType(versionByte);
+  if (prefix === 'paycode') {
+    var hash = payloadData;
+    var type = getPaycodeType(versionByte, prefix);
+    // TODO: Improve P2SH validation using the correct pubkey count
+    validate(hash.length === 72 || (hash.length - 80) % 33 === 0, 'Invalid hash size: ' + address + '.');
+  } else {
+    var hash = payloadData.subarray(1);
+    var type = getType(versionByte, prefix);
+    validate(getHashSize(versionByte) === hash.length * 8, 'Invalid hash size: ' + address + '.');
+  }
   return {
     prefix: prefix,
     type: type,
@@ -90,7 +102,7 @@ var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg', 'paycode'];
  * and is one of 'bitcoincash', 'bchtest', or 'bchreg'.
  *
  * @private
- * @param {string} prefix 
+ * @param {string} prefix
  * @returns {boolean}
  */
 function isValidPrefix(prefix) {
@@ -102,7 +114,7 @@ function isValidPrefix(prefix) {
  * of the address' checksum.
  *
  * @private
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @returns {Uint8Array}
  */
 function prefixToUint5Array(prefix) {
@@ -156,6 +168,7 @@ function getTypeBits(type) {
  *
  * @private
  * @param {number} versionByte
+ * @param {string} prefix
  * @returns {string}
  * @throws {ValidationError}
  */
@@ -165,6 +178,33 @@ function getType(versionByte) {
     return 'P2PKH';
   case 8:
     return 'P2SH';
+  default:
+    throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
+  }
+}
+
+/**
+ * Retrieves the address type from its bit representation within the
+ * version byte for a paycode.
+ *
+ * @private
+ * @param {number} versionByte
+ * @param {string} prefix
+ * @returns {string}
+ * @throws {ValidationError}
+ */
+function getPaycodeType(versionByte) {
+  switch (versionByte) {
+  case 1:
+  case 2:
+  case 5:
+  case 6:
+    return 'P2PKH';
+  case 3:
+  case 4:
+  case 7:
+  case 8:
+    return 'P2PKH';
   default:
     throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
   }
@@ -211,10 +251,7 @@ function getHashSizeBits(hash) {
  * @param {number} versionByte
  * @returns {number}
  */
-function getHashSize(versionByte, prefix) {
-  if (prefix === 'paycode') {
-    return 568
-  }
+function getHashSize(versionByte) {
   switch (versionByte & 7) {
   case 0:
     return 160;
@@ -265,8 +302,8 @@ function fromUint5Array(data) {
  * Returns the concatenation a and b.
  *
  * @private
- * @param {Uint8Array} a 
- * @param {Uint8Array} b 
+ * @param {Uint8Array} a
+ * @param {Uint8Array} b
  * @returns {Uint8Array}
  * @throws {ValidationError}
  */
@@ -304,7 +341,7 @@ function polymod(data) {
 /**
  * Verify that the payload has not been corrupted by checking that the
  * checksum is valid.
- * 
+ *
  * @private
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {Uint8Array} payload Array of 5-bit integers containing the address' payload.
