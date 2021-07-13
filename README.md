@@ -1,4 +1,4 @@
-# CashAddr.js: The new Bitcoin Cash address format for Node.js and web browsers.
+# eCashAddr.js: The eCash address format for Node.js and web browsers.
 
 [![NPM](https://nodei.co/npm/ecashaddrjs.png?downloads=true)](https://nodei.co/npm/ecashaddrjs/)
 
@@ -24,7 +24,7 @@ $ bower install --save ecashaddrjs
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-1.0.0.min.js](https://unpkg.com/ecashaddrjs@1.0.0/dist/cashaddrjs-1.0.0.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-1.0.3.min.js](https://unpkg.com/ecashaddrjs@1.0.3/dist/cashaddrjs-1.0.3.min.js).
 
 ## Usage
 
@@ -53,7 +53,7 @@ You may include a script tag in your HTML and the `ecashaddr` module will be def
 <html>
   <head>
     ...
-    <script src="https://unpkg.com/ecashaddrjs@1.0.0/dist/cashaddrjs-1.0.0.min.js"></script>
+    <script src="https://unpkg.com/ecashaddrjs@1.0.3/dist/cashaddrjs-1.0.3.min.js"></script>
   </head>
   ...
 </html>
