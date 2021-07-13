@@ -1,10 +1,8 @@
 # CashAddr.js: The new Bitcoin Cash address format for Node.js and web browsers.
 
-[![Build Status](https://travis-ci.org/ealmansi/cashaddrjs.svg?branch=master)](https://travis-ci.org/ealmansi/cashaddrjs) [![Coverage Status](https://coveralls.io/repos/github/ealmansi/cashaddrjs/badge.svg?branch=master)](https://coveralls.io/github/ealmansi/cashaddrjs?branch=master)
+[![NPM](https://nodei.co/npm/ecashaddrjs.png?downloads=true)](https://nodei.co/npm/ecashaddrjs/)
 
-[![NPM](https://nodei.co/npm/cashaddrjs.png?downloads=true)](https://nodei.co/npm/cashaddrjs/)
-
-JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
+JavaScript implementation for CashAddr address format for eCash.
 
 Compliant with the original CashAddr [specification](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
 
@@ -15,31 +13,32 @@ Compliant with the original CashAddr [specification](https://github.com/bitcoinc
 ### Using NPM
 
 ```bsh
-$ npm install --save cashaddrjs
+$ npm install --save ecashaddrjs
 ```
 
 ### Using Bower
 
 ```bsh
-$ bower install --save cashaddrjs
+$ bower install --save ecashaddrjs
 ```
 
 ### Manually
 
-You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-0.4.4.min.js](https://unpkg.com/cashaddrjs@0.4.4/dist/cashaddrjs-0.4.4.min.js).
+You may also download the distribution file manually and place it within your third-party scripts directory: [dist/cashaddrjs-1.0.0.min.js](https://unpkg.com/ecashaddrjs@1.0.0/dist/cashaddrjs-1.0.0.min.js).
 
 ## Usage
 
 ### In Node.js
 
 ```javascript
-const cashaddr = require('cashaddrjs');
-const address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a';
-const { prefix, type, hash } = cashaddr.decode(address);
-console.log(prefix); // 'bitcoincash'
+const ecashaddr = require('ecashaddrjs');
+const address = 'ecash:qpm2qsznhks23z7629mms6s4cwef74vcwva87rkuu2';
+const { prefix, type, hash } = ecashaddr.decode(address);
+console.log(prefix); // 'ecash'
 console.log(type); // 'P2PKH'
 console.log(hash); // Uint8Array [ 118, 160, ..., 115 ]
-console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
+console.log(cashaddr.encode(prefix, type, hash)); 
+// 'ecash:qpm2qsznhks23z7629mms6s4cwef74vcwva87rkuu2'
 ```
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for an easy-to-use and well-tested library to translate between different formats, check out [BchAddr.js](https://github.com/ealmansi/bchaddrjs).
@@ -48,13 +47,13 @@ console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z
 
 #### Script Tag
 
-You may include a script tag in your HTML and the `cashaddr` module will be defined globally on subsequent scripts.
+You may include a script tag in your HTML and the `ecashaddr` module will be defined globally on subsequent scripts.
 
 ```html
 <html>
   <head>
     ...
-    <script src="https://unpkg.com/cashaddrjs@0.4.4/dist/cashaddrjs-0.4.4.min.js"></script>
+    <script src="https://unpkg.com/ecashaddrjs@1.0.0/dist/cashaddrjs-1.0.0.min.js"></script>
   </head>
   ...
 </html>
@@ -70,4 +69,4 @@ $ npm run docs
 
 ### Online
 
-Browse automatically generated jsdocs [online](https://emilio.almansi.me/cashaddrjs/module-cashaddr.html).
+Browse automatically generated jsdocs for cashaddrjs, which this is based on, [online](https://emilio.almansi.me/cashaddrjs/module-cashaddr.html).
