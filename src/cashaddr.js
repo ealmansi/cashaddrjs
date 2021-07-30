@@ -67,7 +67,7 @@ function decode(address) {
   var versionByte = payloadData[0];
   if (prefix === 'paycode') {
     var hash = payloadData;
-    var type = getPaycodeType(versionByte, prefix);
+    var type = 'P2RPA';
     // TODO: Improve P2SH validation using the correct pubkey count
     validate(hash.length === 72 || (hash.length - 80) % 33 === 0, 'Invalid hash size: ' + address + '.');
   } else {
@@ -178,33 +178,6 @@ function getType(versionByte) {
     return 'P2PKH';
   case 8:
     return 'P2SH';
-  default:
-    throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
-  }
-}
-
-/**
- * Retrieves the address type from its bit representation within the
- * version byte for a paycode.
- *
- * @private
- * @param {number} versionByte
- * @param {string} prefix
- * @returns {string}
- * @throws {ValidationError}
- */
-function getPaycodeType(versionByte) {
-  switch (versionByte) {
-  case 1:
-  case 2:
-  case 5:
-  case 6:
-    return 'P2PKH';
-  case 3:
-  case 4:
-  case 7:
-  case 8:
-    return 'P2PKH';
   default:
     throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
   }
