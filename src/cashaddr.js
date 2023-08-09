@@ -23,7 +23,7 @@ var validate = validation.validate;
 
 /**
  * Encodes a hash from a given type into a Bitcoin Cash address with the given prefix.
- * 
+ *
  * @static
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
@@ -45,7 +45,7 @@ function encode(prefix, type, hash) {
 
 /**
  * Decodes the given address into its constituting prefix, type and hash. See [#encode()]{@link encode}.
- * 
+ *
  * @static
  * @param {string} address Address to decode. E.g.: 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'.
  * @returns {object}
@@ -83,14 +83,14 @@ var ValidationError = validation.ValidationError;
  *
  * @private
  */
-var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg'];
+var VALID_PREFIXES = ['bitcoincash', 'bchtest', 'bchreg', 'ecash', 'ectest', 'ecregtest'];
 
 /**
  * Checks whether a string is a valid prefix; ie., it has a single letter case
  * and is one of 'bitcoincash', 'bchtest', or 'bchreg'.
  *
  * @private
- * @param {string} prefix 
+ * @param {string} prefix
  * @returns {boolean}
  */
 function isValidPrefix(prefix) {
@@ -102,7 +102,7 @@ function isValidPrefix(prefix) {
  * of the address' checksum.
  *
  * @private
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'. 
+ * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @returns {Uint8Array}
  */
 function prefixToUint5Array(prefix) {
@@ -261,8 +261,8 @@ function fromUint5Array(data) {
  * Returns the concatenation a and b.
  *
  * @private
- * @param {Uint8Array} a 
- * @param {Uint8Array} b 
+ * @param {Uint8Array} a
+ * @param {Uint8Array} b
  * @returns {Uint8Array}
  * @throws {ValidationError}
  */
@@ -300,7 +300,7 @@ function polymod(data) {
 /**
  * Verify that the payload has not been corrupted by checking that the
  * checksum is valid.
- * 
+ *
  * @private
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
  * @param {Uint8Array} payload Array of 5-bit integers containing the address' payload.
