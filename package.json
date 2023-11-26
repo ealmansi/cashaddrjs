@@ -55,6 +55,6 @@
     "webpack-cli": "4.3.0"
   },
   "dependencies": {
-    "big-integer": "1.6.51"
+    "big-integer": "1.6.52"
   }
 }
