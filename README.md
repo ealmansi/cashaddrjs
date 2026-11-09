@@ -40,6 +40,7 @@ console.log(prefix); // 'bitcoincash'
 console.log(type); // 'P2PKH'
 console.log(hash); // Uint8Array [ 118, 160, ..., 115 ]
 console.log(cashaddr.encode(prefix, type, hash)); // 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
+console.log(cashaddr.encode(prefix, 'P2TPKH', hash)); // 
 ```
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for an easy-to-use and well-tested library to translate between different formats, check out [BchAddr.js](https://github.com/ealmansi/bchaddrjs).

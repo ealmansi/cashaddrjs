@@ -26,7 +26,7 @@ var validate = validation.validate;
  * 
  * @static
  * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
- * @param {string} type Type of address to generate. Either 'P2PKH' or 'P2SH'.
+ * @param {string} type Type of address to generate. One of 'P2PKH', 'P2SH', 'P2TPKH', or 'P2TSH'.
  * @param {Uint8Array} hash Hash to encode represented as an array of 8-bit integers.
  * @returns {string}
  * @throws {ValidationError}
@@ -135,7 +135,7 @@ function checksumToUint5Array(checksum) {
  * byte.
  *
  * @private
- * @param {string} type Address type. Either 'P2PKH' or 'P2SH'.
+ * @param {string} type Address type. One of 'P2PKH', 'P2SH', 'P2TPKH' or 'P2TSH'.
  * @returns {number}
  * @throws {ValidationError}
  */
@@ -145,6 +145,10 @@ function getTypeBits(type) {
     return 0;
   case 'P2SH':
     return 8;
+  case 'P2TPKH':
+    return 0x10;
+  case 'P2TSH':
+    return 0x18;
   default:
     throw new ValidationError('Invalid type: ' + type + '.');
   }
@@ -165,6 +169,10 @@ function getType(versionByte) {
     return 'P2PKH';
   case 8:
     return 'P2SH';
+  case 0x10:
+    return 'P2TPKH';
+  case 0x18:
+    return 'P2TSH';
   default:
     throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
   }
