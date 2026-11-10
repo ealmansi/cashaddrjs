@@ -142,9 +142,9 @@ function checksumToUint5Array(checksum) {
 function getTypeBits(type) {
   switch (type) {
   case 'P2PKH':
-    return 0;
+    return 0x00;
   case 'P2SH':
-    return 8;
+    return 0x08;
   case 'P2TPKH':
     return 0x10;
   case 'P2TSH':
