@@ -142,13 +142,13 @@ function checksumToUint5Array(checksum) {
 function getTypeBits(type) {
   switch (type) {
   case 'P2PKH':
-    return 0x00;
+    return 0;
   case 'P2SH':
-    return 0x08;
+    return 8;
   case 'P2TPKH':
-    return 0x10;
+    return 16;
   case 'P2TSH':
-    return 0x18;
+    return 24;
   default:
     throw new ValidationError('Invalid type: ' + type + '.');
   }
@@ -169,9 +169,9 @@ function getType(versionByte) {
     return 'P2PKH';
   case 8:
     return 'P2SH';
-  case 0x10:
+  case 16:
     return 'P2TPKH';
-  case 0x18:
+  case 24:
     return 'P2TSH';
   default:
     throw new ValidationError('Invalid address type in version byte: ' + versionByte + '.');
