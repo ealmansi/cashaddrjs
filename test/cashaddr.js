@@ -15,7 +15,7 @@ describe('cashaddr', () => {
 
   const NETWORKS = ['bitcoincash', 'bchtest', 'bchreg'];
   
-  const ADDRESS_TYPES = ['P2PKH', 'P2SH', 'P2TPKH', 'P2TSH'];
+  const ADDRESS_TYPES = ['P2PKH', 'P2SH', 'TP2PKH', 'TP2SH'];
   
   const VALID_SIZES = [20, 24, 28, 32, 40, 48, 56, 64];
 
@@ -49,25 +49,25 @@ describe('cashaddr', () => {
     'bchtest:pqq3728yw0y47sqn6l2na30mcw6zm78dzqswu8q0kz',
   ];
 
-  const EXPECTED_P2TPKH_OUTPUTS = [
+  const EXPECTED_TP2PKH_OUTPUTS = [
     'bitcoincash:zpm2qsznhks23z7629mms6s4cwef74vcwvrqekrq9w',
     'bitcoincash:zr95sy3j9xwd2ap32xkykttr4cvcu7as4yg2l8d0rh',
     'bitcoincash:zqq3728yw0y47sqn6l2na30mcw6zm78dzqynk3ta4s',
   ];
 
-  const EXPECTED_P2TSH_OUTPUTS = [
+  const EXPECTED_TP2SH_OUTPUTS = [
     'bitcoincash:rpm2qsznhks23z7629mms6s4cwef74vcwv59yeyr7n',
     'bitcoincash:rr95sy3j9xwd2ap32xkykttr4cvcu7as4yl0zg2vc2',
     'bitcoincash:rqq3728yw0y47sqn6l2na30mcw6zm78dzqnkt7v7wd', 
   ];
 
-  const EXPECTED_P2TPKH_OUTPUTS_TESTNET = [
+  const EXPECTED_TP2PKH_OUTPUTS_TESTNET = [
     'bchtest:zpm2qsznhks23z7629mms6s4cwef74vcwv8ja3phzj',
     'bchtest:zr95sy3j9xwd2ap32xkykttr4cvcu7as4yvcmq0cyt',
     'bchtest:zqq3728yw0y47sqn6l2na30mcw6zm78dzqqpjkf2jv',
   ];
 
-  const EXPECTED_P2TSH_OUTPUTS_TESTNET = [
+  const EXPECTED_TP2SH_OUTPUTS_TESTNET = [
     'bchtest:rpm2qsznhks23z7629mms6s4cwef74vcwvshq7x5e0',
     'bchtest:rr95sy3j9xwd2ap32xkykttr4cvcu7as4ymax0gmlk',
     'bchtest:rqq3728yw0y47sqn6l2na30mcw6zm78dzqhy0ewff3',
@@ -122,12 +122,12 @@ describe('cashaddr', () => {
           EXPECTED_P2SH_OUTPUTS[index]
         );
         assert.equal(
-          cashaddr.encode('bitcoincash', 'P2TPKH', TEST_HASHES[index]),
-          EXPECTED_P2TPKH_OUTPUTS[index]
+          cashaddr.encode('bitcoincash', 'TP2PKH', TEST_HASHES[index]),
+          EXPECTED_TP2PKH_OUTPUTS[index]
         );
         assert.equal(
-          cashaddr.encode('bitcoincash', 'P2TSH', TEST_HASHES[index]),
-          EXPECTED_P2TSH_OUTPUTS[index]
+          cashaddr.encode('bitcoincash', 'TP2SH', TEST_HASHES[index]),
+          EXPECTED_TP2SH_OUTPUTS[index]
         );
       }
     });
@@ -143,12 +143,12 @@ describe('cashaddr', () => {
           EXPECTED_P2SH_OUTPUTS_TESTNET[index]
         );
         assert.equal(
-          cashaddr.encode('bchtest', 'P2TPKH', TEST_HASHES[index]),
-          EXPECTED_P2TPKH_OUTPUTS_TESTNET[index]
+          cashaddr.encode('bchtest', 'TP2PKH', TEST_HASHES[index]),
+          EXPECTED_TP2PKH_OUTPUTS_TESTNET[index]
         );
         assert.equal(
-          cashaddr.encode('bchtest', 'P2TSH', TEST_HASHES[index]),
-          EXPECTED_P2TSH_OUTPUTS_TESTNET[index]
+          cashaddr.encode('bchtest', 'TP2SH', TEST_HASHES[index]),
+          EXPECTED_TP2SH_OUTPUTS_TESTNET[index]
         );
       }
     });
@@ -235,4 +235,5 @@ describe('cashaddr', () => {
       }
     });
   });
+
 });
