@@ -10,10 +10,9 @@
   "scripts": {
     "clean": "shx rm -rf dist/ docs/",
     "build": "webpack",
-    "lint": "eslint webpack.config.js {src,test}/**/*.js",
-    "pretest": "yarn lint",
-    "test": "nyc --reporter=html --reporter=text mocha",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "c8 mocha",
     "docs": "jsdoc -d docs src/cashaddr.js",
     "readme": "mustache package.json README.tpl.md > README.md"
   },
@@ -36,23 +35,33 @@
     "url": "https://github.com/ealmansi/cashaddrjs/issues"
   },
   "homepage": "https://github.com/ealmansi/cashaddrjs#readme",
+  "c8": {
+    "all": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "reporter": [
+      "text",
+      "html",
+      "lcov"
+    ]
+  },
   "devDependencies": {
-    "@babel/cli": "7.12.10",
-    "@babel/core": "7.12.10",
-    "@babel/preset-env": "7.12.11",
-    "babel-loader": "8.2.2",
-    "chai": "4.2.0",
-    "coveralls": "3.0.9",
-    "debug": "4.3.1",
-    "eslint": "6.2.2",
-    "jsdoc": "3.6.3",
-    "mocha": "8.2.1",
-    "mustache": "3.0.1",
-    "nyc": "15.0.0",
+    "@babel/core": "8.1.0",
+    "@babel/preset-env": "8.0.7",
+    "@eslint/js": "10.0.1",
+    "babel-loader": "10.1.1",
+    "c8": "12.0.0",
+    "chai": "4.5.0",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "jsdoc": "4.0.5",
+    "mocha": "12.0.3",
+    "mustache": "4.2.0",
     "random-js": "1.0.8",
-    "shx": "0.3.3",
-    "webpack": "5.11.0",
-    "webpack-cli": "4.3.0"
+    "shx": "0.4.0",
+    "webpack": "5.112.2",
+    "webpack-cli": "7.3.1"
   },
   "dependencies": {
     "big-integer": "1.6.52"

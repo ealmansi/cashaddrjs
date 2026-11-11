@@ -1,12 +1,12 @@
 # CashAddr.js: The new Bitcoin Cash address format for Node.js and web browsers.
 
-[![Build Status](https://travis-ci.org/ealmansi/cashaddrjs.svg?branch=master)](https://travis-ci.org/ealmansi/cashaddrjs) [![Coverage Status](https://coveralls.io/repos/github/ealmansi/cashaddrjs/badge.svg?branch=master)](https://coveralls.io/github/ealmansi/cashaddrjs?branch=master)
+[![CI](https://github.com/ealmansi/cashaddrjs/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ealmansi/cashaddrjs/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/ealmansi/cashaddrjs/badge.svg?branch=master)](https://coveralls.io/github/ealmansi/cashaddrjs?branch=master)
 
 [![NPM](https://nodei.co/npm/cashaddrjs.png?downloads=true)](https://nodei.co/npm/cashaddrjs/)
 
 JavaScript implementation for the new CashAddr address format for Bitcoin Cash.
 
-Compliant with the original CashAddr [specification](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md) which improves upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki).
+Compliant with the original CashAddr [specification](https://github.com/bitcoincashorg/bitcoincash.org/blob/master/spec/cashaddr.md) improving upon [BIP 173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki) with the extension added in [CHIP-2022-02-CashTokens](https://github.com/cashtokens/cashtokens/blob/master/readme.md#cashaddress-token-support).
 
 *Note:* This is a JavaScript implementation of the CashAddr format specification. If you are looking for a general purpose Bitcoin Cash address translation library, check out the easy-to-use and well-tested [BchAddr.js](https://github.com/ealmansi/bchaddrjs).
 
