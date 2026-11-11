@@ -1,6 +1,6 @@
 # CashAddr.js: The new Bitcoin Cash address format for Node.js and web browsers.
 
-[![Build Status](https://travis-ci.org/ealmansi/cashaddrjs.svg?branch=master)](https://travis-ci.org/ealmansi/cashaddrjs) [![Coverage Status](https://coveralls.io/repos/github/ealmansi/cashaddrjs/badge.svg?branch=master)](https://coveralls.io/github/ealmansi/cashaddrjs?branch=master)
+[![CI](https://github.com/ealmansi/cashaddrjs/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ealmansi/cashaddrjs/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/ealmansi/cashaddrjs/badge.svg?branch=master)](https://coveralls.io/github/ealmansi/cashaddrjs?branch=master)
 
 [![NPM](https://nodei.co/npm/cashaddrjs.png?downloads=true)](https://nodei.co/npm/cashaddrjs/)
 

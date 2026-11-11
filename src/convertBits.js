@@ -59,7 +59,6 @@ module.exports = function(data, from, to, strictMode) {
   if (!strictMode) {
     if (bits > 0) {
       result[index] = (accumulator << (to - bits)) & mask;
-      ++index;
     }
   } else {
     validate(
