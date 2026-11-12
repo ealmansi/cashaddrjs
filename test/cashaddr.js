@@ -10,6 +10,8 @@
 const { assert } = require('chai');
 const cashaddr = require('../src/cashaddr');
 const Random = require('random-js');
+const specificationTestVectors = require('./specification-test-vectors');
+const {SPEC_TEST_VECTORS} = specificationTestVectors;
 
 describe('cashaddr', () => {
 
@@ -18,6 +20,52 @@ describe('cashaddr', () => {
   const ADDRESS_TYPES = ['P2PKH', 'P2SH', 'TP2PKH', 'TP2SH'];
   
   const VALID_SIZES = [20, 24, 28, 32, 40, 48, 56, 64];
+
+  const TYPE_NAMES = { 0: 'P2PKH', 1: 'P2SH' };
+  const KNOWN_TYPES = 4;
+
+  const toHex = (bytes) => Buffer.from(bytes).toString('hex').toUpperCase();
+
+  describe('CashAddr test vectors', () => {
+    for (const vector of SPEC_TEST_VECTORS) {
+      const { payloadSize, type, cashAddr, payloadHex } = vector;
+      const prefix = cashAddr.split(':')[0];
+      const label = `${prefix} | type ${TYPE_NAMES[type]} | ${payloadSize} bytes`;
+
+      // The library only understands type bits 0 (P2PKH) and 1 (P2SH).
+      const networkKnown = NETWORKS.includes(prefix);
+      const typeKnown = type < KNOWN_TYPES;
+      describe(label, () => {
+        if (!typeKnown) {
+          it('decoding results in a thrown exception with message "invalid address type in version byte"', () => {
+            assert.throws(() => cashaddr.decode(cashAddr), /Invalid address type in version byte/);
+          });
+          return;
+        } else {
+          it('decodes with the expected prefix, type, and payload', () => {
+            const decoded = cashaddr.decode(cashAddr);
+            assert.strictEqual(decoded.prefix, prefix);
+            assert.strictEqual(decoded.type, TYPE_NAMES[type]);
+            assert.lengthOf(decoded.hash, payloadSize);
+            assert.strictEqual(toHex(decoded.hash), payloadHex);
+          });
+        }
+
+        if (networkKnown)
+          it('round-trips through encode()', () => {
+            const { hash, type: decodedType } = cashaddr.decode(cashAddr);
+            assert.strictEqual(cashaddr.encode(prefix, decodedType, hash), cashAddr);
+          });
+        else
+          it('attempted round-trip through encode() throws exception with message "invalid prefix"', () => {
+            const { hash, type: decodedType } = cashaddr.decode(cashAddr);
+            assert.throws(() => cashaddr.encode(prefix, decodedType, hash), /Invalid prefix: pref./);
+          });
+
+
+      });
+    }
+  });
 
   const TEST_HASHES = [
     new Uint8Array([118, 160, 64,  83, 189, 160, 168, 139, 218, 81, 119, 184, 106, 21, 195, 178, 159, 85,  152, 115]),
